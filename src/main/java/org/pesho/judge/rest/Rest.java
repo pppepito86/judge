@@ -19,6 +19,7 @@ public class Rest {
     @GET
     @Produces("application/json")
     public User printMessage() {
+    	userManager.createCustomer("", "");
         return new User();
     }
     

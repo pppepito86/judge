@@ -48,14 +48,12 @@ public class User implements Serializable {
 	@Column (name = "passwordhash")
 	private String passwordHash;
 	
-	@NotNull
 	@Column (name = "passwordsalt")
 	private String passwordSalt;
 	
 	@Column(name = "isdisabled")
 	private boolean isDisabled;
 	
-	@NotNull
 	@Column(name = "validationcode")
 	private String validationCode = "";
 	
