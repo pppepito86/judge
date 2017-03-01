@@ -10,31 +10,30 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import org.pesho.judge.model.User;
+import org.pesho.judge.model.Problem;
+import org.pesho.judge.model.Submission;
 
-@Path("users")
-public class UsersResource {
+@Path("submissions")
+public class SubmissionsResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<User> listUsers() {
-    	// TODO:
-    	return null;
+    public List<Problem> listSubmisssions() {
+        return null;
     }
     
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public User createUser(User user) {
-    	// TODO:
-    	return user;
+    public Submission createSubmission(Submission submission) {
+        return submission;
     }
     
     @GET
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public User getUser(@PathParam("id") int userId) {
-    	// TODO:
+    public Submission getSubmission(@PathParam("id") int submissionId) {
         return null;
     }
+    
 }

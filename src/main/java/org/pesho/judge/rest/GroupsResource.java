@@ -12,13 +12,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.pesho.judge.model.Group;
+import org.pesho.judge.model.User;
 
 @Path("groups")
 public class GroupsResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Group> listUsers() {
+    public List<Group> listGroups() {
         return null;
     }
     
@@ -41,5 +42,12 @@ public class GroupsResource {
     @Produces(MediaType.APPLICATION_JSON)
     public Group updateGroup(@PathParam("id") int groupId) {
         return null;
+    }
+    
+    @GET
+    @Path("{id}/users")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<User> getUsersFromGroup(@PathParam("id") int groupId) {
+    	return null;
     }
 }

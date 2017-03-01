@@ -38,8 +38,9 @@ public class ProblemsResource {
     
     @PUT
     @Path("{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Problem updateProblem(@PathParam("id") int problemId) {
+    public Problem updateProblem(@PathParam("id") int problemId, Problem problem) {
         return null;
     }
 }
