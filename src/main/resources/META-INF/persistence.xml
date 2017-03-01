@@ -6,6 +6,16 @@
 	<persistence-unit name="judge" transaction-type="JTA">
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
 		<jta-data-source>java:jboss/datasources/MySqlDS</jta-data-source>
+		<class>org.pesho.judge.model.User</class>
+		<!-- class>org.pesho.judge.model.Assignment</class>
+		<class>org.pesho.judge.model.AssignmentProblem</class>
+		<class>org.pesho.judge.model.Group</class>
+		<class>org.pesho.judge.model.Problem</class>
+		<class>org.pesho.judge.model.Role</class>
+		<class>org.pesho.judge.model.Submission</class>
+		<class>org.pesho.judge.model.SubmissionDetail</class>
+		<class>org.pesho.judge.model.Tag</class>
+		<class>org.pesho.judge.model.UserGroup</class-->
 		<properties>
 			<property name="hibernate.show_sql" value="true" />
 			<property name="hibernate.format_sql" value="true" />

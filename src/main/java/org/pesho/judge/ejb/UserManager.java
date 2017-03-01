@@ -17,6 +17,12 @@ public class UserManager {
 		System.out.println("create customer");
 		System.out.println(em);
 		User customer = new User();
+		customer.setUsername("username");
+		customer.setPasswordHash("hash");
+		customer.setFirstname("firstname");
+		customer.setLastname("lastname");
+		customer.setEmail("dfadf@fsd");
+		
 		em.persist(customer);
 		return customer;
 	}
