@@ -1,4 +1,4 @@
-package org.judge.pesho;
+package org.pesho.judge.rest;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;

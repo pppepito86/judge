@@ -1,4 +1,4 @@
-package org.judge.pesho;
+package org.pesho.judge.rest;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -6,6 +6,9 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
+
+import org.pesho.judge.ejb.UserManager;
+import org.pesho.judge.model.User;
 
 @Path("/test")
 public class Rest {
@@ -16,7 +19,7 @@ public class Rest {
     @GET
     @Produces("application/json")
     public User printMessage() {
-        return new User("Petar Petrov");
+        return new User();
     }
     
     @POST
@@ -25,7 +28,7 @@ public class Rest {
     	System.out.println("rest/test");
     	System.out.println("Usermanager: " + userManager);
     	userManager.createCustomer("", "");
-        return new User("Petar Petrov");
+        return new User();
     }
     
     @GET

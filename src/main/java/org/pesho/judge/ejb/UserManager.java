@@ -1,9 +1,11 @@
-package org.judge.pesho;
+package org.pesho.judge.ejb;
 
 import javax.ejb.Stateful;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
+
+import org.pesho.judge.model.User;
 
 @Stateful
 public class UserManager {
@@ -14,7 +16,7 @@ public class UserManager {
 	public User createCustomer(String name, String address) {
 		System.out.println("create customer");
 		System.out.println(em);
-		User customer = new User("pesho");
+		User customer = new User();
 		em.persist(customer);
 		return customer;
 	}

@@ -6,9 +6,9 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.judge.pesho.User;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.pesho.judge.model.User;
 
 public class RestTest {
 
