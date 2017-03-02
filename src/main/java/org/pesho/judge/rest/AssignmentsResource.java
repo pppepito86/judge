@@ -123,9 +123,6 @@ public class AssignmentsResource {
     			.setParameter("user", user);
     	
     	List<Submission> submissions = query.getResultList();
-    	for(Submission s : submissions) {
-    		System.out.println(s);
-    	}
 		return submissions;
     }
     
