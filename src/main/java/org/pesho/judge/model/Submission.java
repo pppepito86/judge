@@ -9,9 +9,19 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 @Entity
+@NamedQueries({
+	@NamedQuery(name="Submission.findAll", query="SELECT u FROM Submission u"),
+	@NamedQuery(name="Submission.findByAssignment", 
+		query="SELECT u FROM Submission u WHERE u.assignment = :assignment"),
+	@NamedQuery(name="Submission.findByAssignmentAndUser", 
+		query="SELECT u FROM Submission u WHERE u.assignment = :assignment AND u.user = :user"),
+})
+ 
 @Table(name = "submissions")
 public class Submission implements Serializable {
 
@@ -50,13 +60,13 @@ public class Submission implements Serializable {
 	private String reason;
 	
 	@Column(name = "correct")
-	private int correct;
+	private Integer correct = 0;
 	
 	@Column(name = "total")
-	private int total;
+	private Integer total;
 	
 	@Column(name = "points")
-	private int points;
+	private Integer points;
 	
 	public Submission() {
 	}
@@ -155,6 +165,13 @@ public class Submission implements Serializable {
 
 	public void setPoints(int points) {
 		this.points = points;
+	}
+
+	@Override
+	public String toString() {
+		return "Submission [id=" + id + ", assignment=" + assignment + ", problem=" + problem + ", user=" + user
+				+ ", language=" + language + ", sourceFile=" + sourceFile + ", time=" + time + ", verdict=" + verdict
+				+ ", reason=" + reason + ", correct=" + correct + ", total=" + total + ", points=" + points + "]";
 	}
 
 }

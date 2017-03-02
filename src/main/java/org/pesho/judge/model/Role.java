@@ -5,10 +5,12 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "roles")
+@NamedQuery(name="Role.findAll", query="SELECT u FROM Role u")
 public class Role implements Serializable {
 
 	private static final long serialVersionUID = 1L;

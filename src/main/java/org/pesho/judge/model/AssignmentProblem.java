@@ -8,9 +8,16 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 @Entity
+@NamedQueries({
+	@NamedQuery(name="AssignmentProblem.findAll", query="SELECT u FROM AssignmentProblem u"),
+	@NamedQuery(name="AssignmentProblem.findByAssignment", 
+		query="SELECT u FROM AssignmentProblem u WHERE u.assignment = :assignment")
+})
 @Table(name = "assignmentproblems")
 public class AssignmentProblem implements Serializable {
 	

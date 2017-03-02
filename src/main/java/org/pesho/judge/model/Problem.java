@@ -8,9 +8,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 @Entity
+@NamedQuery(name="Problem.findAll", query="SELECT u FROM Problem u") 
 @Table(name = "problems")
 public class Problem implements Serializable {
 	
@@ -35,7 +39,7 @@ public class Problem implements Serializable {
 	private String languages;
 
 	@Column(name = "points")
-	private int points;
+	private Integer points;
 	
 	@Column(name = "visibility")
 	private String visibility;
@@ -44,8 +48,9 @@ public class Problem implements Serializable {
 	@JoinColumn(name = "author")
 	private User author;
 
+	@JsonIgnore
 	@Column(name = "tests")
-	private int tests;
+	private Integer tests;
 	
 	@Column(name = "source_checker")
 	private String sourceChecker;
@@ -142,6 +147,15 @@ public class Problem implements Serializable {
 
 	public void setTestChecker(String testChecker) {
 		this.testChecker = testChecker;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof Problem) {
+			return id == ((Problem)obj).id;
+		} else {
+			return false;
+		}
 	}
 	
 }

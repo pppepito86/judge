@@ -9,10 +9,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
+
 @Entity
+@NamedQuery(name="User.findAll", query="SELECT u FROM User u") 
 @Table(name = "users")
 public class User implements Serializable {
 
@@ -46,9 +50,11 @@ public class User implements Serializable {
 
 	@NotNull
 	@Column (name = "passwordhash")
+	@JsonIgnore
 	private String passwordHash;
 	
 	@Column (name = "passwordsalt")
+	@JsonIgnore
 	private String passwordSalt;
 	
 	@Column(name = "isdisabled")

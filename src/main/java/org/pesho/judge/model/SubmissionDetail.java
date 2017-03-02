@@ -8,10 +8,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 @Entity
+@NamedQuery(name="SubmissionDetail.findAll", query="SELECT u FROM SubmissionDetail u") 
 @Table(name = "submissiondetails")
 public class SubmissionDetail implements Serializable {
 
@@ -40,7 +42,7 @@ public class SubmissionDetail implements Serializable {
 	private String reason;
 	
 	@Column(name = "time")
-	private int time = 0;
+	private Integer time = 0;
 
 	public SubmissionDetail() {
 	}

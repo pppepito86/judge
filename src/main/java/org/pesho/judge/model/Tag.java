@@ -8,10 +8,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 @Entity
+@NamedQuery(name="Tag.findAll", query="SELECT u FROM Tag u") 
 @Table(name = "tags")
 public class Tag implements Serializable {
 
