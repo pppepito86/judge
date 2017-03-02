@@ -16,6 +16,8 @@ public class RolesResource {
 	@PersistenceContext(unitName = "judge")
 	EntityManager em;
 	
+	// TODO: shall not be visible outside
+	
     @POST
     public Response createRoles(Role role) {
     	em.persist(role);

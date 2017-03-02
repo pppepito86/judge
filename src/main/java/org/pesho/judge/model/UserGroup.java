@@ -8,12 +8,18 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "usergroups")
-@NamedQuery(name="UserGroup.findAll", query="SELECT u FROM UserGroup u") 
+@NamedQueries({
+	@NamedQuery(name="UserGroup.findAll", query="SELECT u FROM UserGroup u"),
+	@NamedQuery(name="UserGroup.findByGroup", 
+		query="SELECT u FROM UserGroup u WHERE u.group = :group")
+})
+
 public class UserGroup implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
