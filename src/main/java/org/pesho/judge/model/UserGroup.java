@@ -61,11 +61,11 @@ public class UserGroup implements Serializable {
 		this.group = group;
 	}
 
-	public int getRole() {
+	public Integer getRole() {
 		return role;
 	}
 
-	public void setRole(int role) {
+	public void setRole(Integer role) {
 		this.role = role;
 	}
 }

@@ -101,11 +101,11 @@ public class Problem implements Serializable {
 		this.languages = languages;
 	}
 
-	public int getPoints() {
+	public Integer getPoints() {
 		return points;
 	}
 
-	public void setPoints(int points) {
+	public void setPoints(Integer points) {
 		this.points = points;
 	}
 
@@ -125,11 +125,11 @@ public class Problem implements Serializable {
 		this.author = author;
 	}
 
-	public int getTests() {
+	public Integer getTests() {
 		return tests;
 	}
 
-	public void setTests(int tests) {
+	public void setTests(Integer tests) {
 		this.tests = tests;
 	}
 

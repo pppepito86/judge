@@ -134,7 +134,8 @@ public class AssignmentsResource {
     	
     	List<Submission> submissions = getUserSubmissions(assignmentId, userId);
     	
-    	Comparator<Submission> submissionComparator = (Submission s1, Submission s2) -> s1.getPoints() - s2.getPoints();
+    	Comparator<Submission> submissionComparator = 
+    			(s1, s2) -> s1.getPoints() - s2.getPoints();
     	
     	Map<Problem, Optional<Submission>> problemBestToSubmission = submissions
     		.stream()
@@ -144,7 +145,7 @@ public class AssignmentsResource {
     		.values()
     		.stream()
     		.filter(Optional<Submission>::isPresent)
-    		.map((Optional<Submission> s) -> s.get().getPoints())
+    		.map((s) -> s.get().getPoints())
     		.collect(Collectors.summingInt(Integer::intValue));
     	
 		return points;

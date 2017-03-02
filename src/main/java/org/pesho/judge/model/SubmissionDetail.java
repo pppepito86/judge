@@ -87,11 +87,11 @@ public class SubmissionDetail implements Serializable {
 		this.reason = reason;
 	}
 
-	public int getTime() {
+	public Integer getTime() {
 		return time;
 	}
 
-	public void setTime(int time) {
+	public void setTime(Integer time) {
 		this.time = time;
 	}
 }

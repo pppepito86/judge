@@ -143,27 +143,27 @@ public class Submission implements Serializable {
 		this.reason = reason;
 	}
 
-	public int getCorrect() {
+	public Integer getCorrect() {
 		return correct;
 	}
 
-	public void setCorrect(int correct) {
+	public void setCorrect(Integer correct) {
 		this.correct = correct;
 	}
 
-	public int getTotal() {
+	public Integer getTotal() {
 		return total;
 	}
 
-	public void setTotal(int total) {
+	public void setTotal(Integer total) {
 		this.total = total;
 	}
 
-	public int getPoints() {
+	public Integer getPoints() {
 		return points;
 	}
 
-	public void setPoints(int points) {
+	public void setPoints(Integer points) {
 		this.points = points;
 	}
 
