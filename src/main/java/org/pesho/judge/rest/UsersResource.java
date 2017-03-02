@@ -14,6 +14,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.pesho.judge.model.Role;
 import org.pesho.judge.model.User;
 
 @Stateless
@@ -35,6 +36,8 @@ public class UsersResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public User createUser(User user) {
+    	Role role = em.find(Role.class, user.getRoles().getId());
+    	user.setRoles(role);
     	em.persist(user);
     	return user;
     }
