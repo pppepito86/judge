@@ -35,7 +35,7 @@ public class UsersTest {
 
 	@Deployment(testable = false)
 	public static WebArchive createDeployment() {
-		WebArchive war = ShrinkWrap.create(WebArchive.class, "testweb.war")
+		WebArchive war = ShrinkWrap.create(WebArchive.class, "judge_test.war")
 				.addPackage(JaxRsActivator.class.getPackage()).addPackage("org.pesho.judge.dto")
 				.addPackage("org.pesho.judge.dto.mapper").addPackage("org.pesho.judge.ejb")
 				.addPackage("org.pesho.judge.model").addPackage("org.pesho.judge.rest")
