@@ -40,6 +40,7 @@ public class UsersTest {
 				.addPackage("org.pesho.judge.dto.mapper").addPackage("org.pesho.judge.ejb")
 				.addPackage("org.pesho.judge.model").addPackage("org.pesho.judge.rest")
 				.addPackage("org.pesho.judge.security")
+				.addClass(TestDataCreator.class)
 				.addAsResource("test-persistence.xml", "META-INF/persistence.xml");
 		return war;
 	}
@@ -50,7 +51,7 @@ public class UsersTest {
 
 	@Test
 	public void usersTest() throws InterruptedException {
-		createRoles();
+		//createRoles();
 
 		Response response = ClientBuilder.newClient().target(getRequestUrl("users")).request().get();
 		assertThat(response.getStatus(), is(200));
