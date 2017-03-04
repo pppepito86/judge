@@ -39,6 +39,7 @@ public class UsersTest {
 				.addPackage(JaxRsActivator.class.getPackage()).addPackage("org.pesho.judge.dto")
 				.addPackage("org.pesho.judge.dto.mapper").addPackage("org.pesho.judge.ejb")
 				.addPackage("org.pesho.judge.model").addPackage("org.pesho.judge.rest")
+				.addPackage("org.pesho.judge.security")
 				.addAsResource("test-persistence.xml", "META-INF/persistence.xml");
 		return war;
 	}
