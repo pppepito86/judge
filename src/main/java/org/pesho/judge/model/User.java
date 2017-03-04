@@ -53,7 +53,7 @@ public class User implements Serializable {
 
 	@NotNull
 	@Column (name = "passwordhash")
-	@JsonIgnore
+	//@JsonIgnore
 	private String passwordHash;
 	
 	@Column (name = "passwordsalt")

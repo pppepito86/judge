@@ -28,6 +28,11 @@ public class UsersTest {
 	
 	@ArquillianResource
 	private URL deploymentUrl;
+	
+	public String getURL() {
+		//return "http://127.0.0.1:8080/judge.web4/";
+		return deploymentUrl.toString();
+	}
 
 	@Deployment(testable = false)
 	public static WebArchive createDeployment() {
@@ -35,15 +40,17 @@ public class UsersTest {
 		
 		WebArchive war = ShrinkWrap.create(WebArchive.class, "testweb.war")
 				.addPackage(JaxRsActivator.class.getPackage())
+				.addPackage("org.pesho.judge.dto")
+				.addPackage("org.pesho.judge.dto.mapper")
 				.addPackage("org.pesho.judge.ejb")
 				.addPackage("org.pesho.judge.model")
 				.addPackage("org.pesho.judge.rest")
-				.addAsResource("persistence.xml", "META-INF/persistence.xml");
+				.addAsResource("test-persistence.xml", "META-INF/persistence.xml");
 		return war;
 	}
 	
 	private String getRequestUrl(String path) {
-		return new StringBuilder(deploymentUrl.toString()).append("rest/1.0/" + path).toString();
+		return new StringBuilder(getURL()).append("rest/1.0/" + path).toString();
 	}
 
 	@Test
@@ -52,8 +59,7 @@ public class UsersTest {
 		
 		Response response = ClientBuilder.newClient().target(getRequestUrl("users")).request().get();
 		assertThat(response.getStatus(), is(200));
-		
-		//testCreateUser();
+		testCreateUser();
 		//String output = response.readEntity(String.class);
 		//System.out.println(output);
 		//System.out.println(response.getStatus());
@@ -63,7 +69,7 @@ public class UsersTest {
 		Response response = ClientBuilder.newClient().target(getRequestUrl("roles")).request().post(Entity.entity(Role.USER, MediaType.APPLICATION_JSON));
 		String output = response.readEntity(String.class);
 		System.out.println(output);
-		assertThat(response.getStatus(), is(Response.Status.CREATED.getStatusCode()));
+		assertThat(response.getStatus(), is(Response.Status.OK.getStatusCode()));
 	}
 	
 	private void testCreateUser() {
