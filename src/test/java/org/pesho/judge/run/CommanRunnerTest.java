@@ -7,9 +7,16 @@ import static org.hamcrest.number.OrderingComparison.lessThan;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
+import static org.junit.Assume.assumeFalse;
+import org.junit.Before;
 import org.junit.Test;
 
 public class CommanRunnerTest {
+
+	@Before
+	public void beforeMethod() {
+		assumeFalse(System.getProperty("os.name").toLowerCase().contains("win"));
+	}
 
 	@Test
 	public void testEcho() throws Exception {
@@ -19,7 +26,7 @@ public class CommanRunnerTest {
 		assertThat(exitCode, is(0));
 		assertThat(runner.getOutput(), is("test\n"));
 	}
-	
+
 	@Test
 	public void testEchoRun() throws Exception {
 		CommandRunner runner = new CommandRunner("echo", new String[] { "test" }, 5000);
@@ -75,7 +82,7 @@ public class CommanRunnerTest {
 		assertThat(exitCode, not(0));
 		assertThat(totalTime, is(lessThan(2000L)));
 	}
-	
+
 	@Test
 	public void testTimeout() throws Exception {
 		long startTime = System.currentTimeMillis();
