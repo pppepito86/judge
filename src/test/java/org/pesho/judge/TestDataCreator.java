@@ -10,7 +10,7 @@ import javax.transaction.Transactional;
 import org.pesho.judge.model.Role;
 import org.pesho.judge.model.User;
 
-// @ApplicationScoped
+@ApplicationScoped
 public class TestDataCreator {
 
 	@PersistenceContext

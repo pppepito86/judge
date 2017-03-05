@@ -25,8 +25,8 @@ public class GroupsDAO {
     }
     
     public Group createGroup(Group group) {
-    	// TODO;
-        return null;
+    	em.persist(group);
+        return group;
     }
     
     public Group getGroup(int groupId) {

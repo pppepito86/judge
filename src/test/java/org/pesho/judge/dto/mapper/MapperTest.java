@@ -14,7 +14,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.pesho.judge.TestDataCreator;
 import org.pesho.judge.dto.SubmissionDTO;
-import org.pesho.judge.ejb.UserEJB;
+import org.pesho.judge.ejb.UserDAO;
 import org.pesho.judge.model.Role;
 import org.pesho.judge.model.Submission;
 import org.pesho.judge.model.User;
@@ -40,7 +40,7 @@ public class MapperTest  {
 	Mapper mapper;
 	
 	@Inject 
-	UserEJB userEJB;
+	UserDAO userEJB;
 	
 	@Test
 	public void testEntityToDTO() {

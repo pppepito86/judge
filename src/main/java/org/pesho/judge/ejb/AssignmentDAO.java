@@ -26,7 +26,7 @@ public class AssignmentDAO {
 	EntityManager em;
 	
 	@Inject
-	UserEJB userDAO;
+	UserDAO userDAO;
 
 	public List<Assignment> listAssignments() {
     	TypedQuery<Assignment> query = em.createNamedQuery("Assignment.findAll", Assignment.class);

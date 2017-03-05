@@ -2,6 +2,7 @@ package org.pesho.judge.rest;
 
 import java.util.List;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -17,7 +18,7 @@ import org.pesho.judge.dto.ProblemDTO;
 import org.pesho.judge.dto.SubmissionDTO;
 import org.pesho.judge.dto.mapper.Mapper;
 import org.pesho.judge.ejb.AssignmentDAO;
-import org.pesho.judge.ejb.UserEJB;
+import org.pesho.judge.ejb.UserDAO;
 import org.pesho.judge.model.Assignment;
 import org.pesho.judge.model.Problem;
 import org.pesho.judge.model.Submission;
@@ -29,13 +30,14 @@ public class AssignmentsResource {
 	AssignmentDAO assignmentsDAO;
 	
 	@Inject 
-	UserEJB usersDAO;
+	UserDAO usersDAO;
 	
 	@Inject
 	Mapper mapper;
 	
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"admin", "teacher", "user"})
     public List<AssignmentDTO> listAssignments() {
     	List<Assignment> assignments = assignmentsDAO.listAssignments();
     	List<AssignmentDTO> assignmentsDTO =  mapper.mapList(assignments, AssignmentDTO.class);
@@ -45,8 +47,10 @@ public class AssignmentsResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public AssignmentDTO createAssingment(Assignment assignment) {
-    	Assignment created = assignmentsDAO.createAssingment(assignment);
+    @RolesAllowed({"admin", "teacher"})
+    public AssignmentDTO createAssingment(AssignmentDTO assignment) {
+    	Assignment toBeCreated = mapper.map(assignment, Assignment.class);
+    	Assignment created = assignmentsDAO.createAssingment(toBeCreated);
     	AssignmentDTO createdDTO = mapper.map(created, AssignmentDTO.class);
         return createdDTO;
     }

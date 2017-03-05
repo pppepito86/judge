@@ -11,7 +11,7 @@ import org.pesho.judge.model.Role;
 import org.pesho.judge.model.User;
 
 @Stateless
-public class UserEJB {
+public class UserDAO {
 
 	@PersistenceContext(unitName = "judge")
 	EntityManager em;

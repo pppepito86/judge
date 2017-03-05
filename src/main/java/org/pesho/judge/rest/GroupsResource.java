@@ -2,6 +2,7 @@ package org.pesho.judge.rest;
 
 import java.util.List;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -30,6 +31,7 @@ public class GroupsResource {
 	
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed("admin")
     public List<GroupDTO> listGroups() {
     	
     	List<Group> groups = groupsDAO.listGroups();
@@ -40,7 +42,9 @@ public class GroupsResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public GroupDTO createGroup(Group group) {
+    @RolesAllowed("admin")
+    public GroupDTO createGroup(GroupDTO groupDto) {
+    	Group group = mapper.map(groupDto, Group.class);
     	Group created = groupsDAO.createGroup(group);
     	GroupDTO createdDTO = mapper.map(created, GroupDTO.class);
         return createdDTO;
