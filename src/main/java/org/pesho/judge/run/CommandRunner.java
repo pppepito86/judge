@@ -10,6 +10,7 @@ import java.util.TimerTask;
 
 public class CommandRunner {
 	
+	public static final long DEFAULT_TIMEOUT = 5000;
 	public static final String PATH = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/usr/local/go/bin";
 
 	private String cmd;
@@ -23,7 +24,7 @@ public class CommandRunner {
 	private Timer timer;
 	
 	public CommandRunner(String cmd, String[] args) {
-		this(cmd, args, null, 5000);
+		this(cmd, args, null, DEFAULT_TIMEOUT);
 	}
 	
 	public CommandRunner(String cmd, String[] args, long timeout) {

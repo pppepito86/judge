@@ -1,27 +1,20 @@
 package org.pesho.judge.run;
 
-public class DockerRunner {
+public class DockerRunner extends CommandRunner {
 
 	public static final String IMAGE = "pppepito86/judgebox";
 	public static final String BASH = "bash";
 
-	private CommandRunner commandRunner;
-
+	public DockerRunner(String cmd) {
+		this(cmd, DEFAULT_TIMEOUT);
+	}
+	
 	public DockerRunner(String cmd, long timeout) {
-		String[] args = new String[]{"-c", "docker run " + IMAGE + " " + cmd};
-		commandRunner = new CommandRunner(BASH, args, timeout);
+		this(cmd, null, timeout);
 	}
 	
-	public int run() throws Exception {
-		return commandRunner.run();
+	public DockerRunner(String cmd, String workDir, long timeout) {
+		super(BASH, new String[]{"-c", "docker run " + IMAGE + " " + cmd}, workDir, timeout);
 	}
 	
-	public String getOutput() {
-		return commandRunner.getOutput();
-	}
-	
-	public String getError() {
-		return commandRunner.getError();
-	}
-
 }
