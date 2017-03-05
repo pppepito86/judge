@@ -1,6 +1,7 @@
 package org.pesho.judge.run;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -11,6 +12,7 @@ public class CommandRunner {
 
 	private String cmd;
 	private String[] args;
+	private File workDir;
 	private long timeout;
 
 	private Process process;
@@ -18,13 +20,26 @@ public class CommandRunner {
 	private OutputCollector errorCollector;
 	private Timer timer;
 	
+	public CommandRunner(String cmd, String[] args) {
+		this(cmd, args, null, 5000);
+	}
+	
 	public CommandRunner(String cmd, String[] args, long timeout) {
+		this(cmd, args, null, timeout);
+	}
+	
+	public CommandRunner(String cmd, String[] args, String workDir, long timeout) {
 		this.cmd = cmd;
 		if (args == null) {
 			args = new String[] {};
 		}
 		this.args = args;
 		this.timeout = timeout;
+		if (workDir != null) {
+			this.workDir = new File(workDir);
+		} else {
+			this.workDir = new File(".");
+		}
 	}
 	
 	public int run() throws IOException, InterruptedException {
@@ -36,7 +51,9 @@ public class CommandRunner {
 		String[] command = new String[args.length + 1];
 		command[0] = cmd;
 		System.arraycopy(args, 0, command, 1, args.length);
-		process = Runtime.getRuntime().exec(command);
+		String[] env = new String[1];
+		env[0] = "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/usr/local/go/bin:";
+		process = Runtime.getRuntime().exec(command, env, workDir);
 		outputCollector = stream(process.getInputStream());
 		errorCollector = stream(process.getErrorStream());
 		timer = new Timer();
