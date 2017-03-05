@@ -5,7 +5,6 @@ import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
 
-import java.net.URL;
 import java.util.List;
 
 import javax.ws.rs.client.ClientBuilder;
@@ -16,47 +15,17 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.arquillian.junit.Arquillian;
-import org.jboss.arquillian.test.api.ArquillianResource;
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.pesho.judge.dto.TokenDTO;
 import org.pesho.judge.model.Role;
 import org.pesho.judge.model.User;
-import org.pesho.judge.rest.JaxRsActivator;
 
 @RunWith(Arquillian.class)
 @RunAsClient
-public class UsersTest {
-
-	@ArquillianResource
-	private URL deploymentUrl;
-
-	public String getURL() {
-		return deploymentUrl.toString();
-	}
-
-	@Deployment(testable = false)
-	public static WebArchive createDeployment() {
-		WebArchive war = ShrinkWrap.create(WebArchive.class, "judge_test.war")
-				.addPackage(JaxRsActivator.class.getPackage()).addPackage("org.pesho.judge.dto")
-				.addPackage("org.pesho.judge.dto.mapper").addPackage("org.pesho.judge.ejb")
-				.addPackage("org.pesho.judge.model").addPackage("org.pesho.judge.rest")
-				.addPackage("org.pesho.judge.exception")
-				.addPackage("org.pesho.judge.security")
-				.addClass(TestDataCreator.class)
-				.setWebXML("test-web.xml")
-				.addAsResource("test-persistence.xml", "META-INF/persistence.xml");
-		return war;
-	}
-
-	private String getRequestUrl(String path) {
-		return new StringBuilder(getURL()).append("rest/1.0/" + path).toString();
-	}
+public class UsersTest extends ApplicationBase {
 
 	@Test
 	public void usersTest() throws InterruptedException {
