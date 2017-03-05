@@ -9,6 +9,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class CommandRunner {
+	
+	public static final String PATH = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/usr/local/go/bin";
 
 	private String cmd;
 	private String[] args;
@@ -52,7 +54,7 @@ public class CommandRunner {
 		command[0] = cmd;
 		System.arraycopy(args, 0, command, 1, args.length);
 		String[] env = new String[1];
-		env[0] = "PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/usr/local/go/bin:";
+		env[0] = "PATH=" + PATH;
 		process = Runtime.getRuntime().exec(command, env, workDir);
 		outputCollector = stream(process.getInputStream());
 		errorCollector = stream(process.getErrorStream());

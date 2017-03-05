@@ -11,7 +11,7 @@ import static org.junit.Assume.assumeFalse;
 import org.junit.Before;
 import org.junit.Test;
 
-public class CommanRunnerTest {
+public class CommandTest {
 
 	@Before
 	public void beforeMethod() {

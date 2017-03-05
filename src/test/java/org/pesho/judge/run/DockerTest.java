@@ -13,7 +13,7 @@ public class DockerTest {
 	@Before
 	public void beforeMethod() throws Exception {
 		assumeFalse(System.getProperty("os.name").toLowerCase().contains("win"));
-		int exitCode = new CommandRunner("/bin/bash", new String[] {"-c", "which docker" }, 5000).run();
+		int exitCode = new CommandRunner("bash", new String[] {"-c", "which docker" }, 5000).run();
 		assumeThat(exitCode, is(0));
 	}
 	
