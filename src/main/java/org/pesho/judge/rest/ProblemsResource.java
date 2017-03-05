@@ -3,6 +3,7 @@ package org.pesho.judge.rest;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -30,6 +31,7 @@ public class ProblemsResource {
 	
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"admin", "teacher", "user"})
     public List<ProblemDTO> listProblems() {
     	List<Problem> listProblems = problemsDAO.listProblems();
     	List<ProblemDTO> listProblemsDTO = mapper.mapList(listProblems, ProblemDTO.class);
@@ -39,7 +41,9 @@ public class ProblemsResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public ProblemDTO createProblem(Problem problem) {
+    @RolesAllowed({"admin", "teacher"})
+    public ProblemDTO createProblem(ProblemDTO problemDto) {
+    	Problem problem = mapper.map(problemDto, Problem.class);
     	Problem res = problemsDAO.createProblem(problem);
     	ProblemDTO resDto = mapper.map(res, ProblemDTO.class);
         return resDto;
@@ -48,6 +52,7 @@ public class ProblemsResource {
     @GET
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"admin", "teacher", "user"})
     public ProblemDTO getProblem(@PathParam("id") int problemId) {
     	Problem res = problemsDAO.getProblem(problemId); 
     	ProblemDTO resDto = mapper.map(res, ProblemDTO.class);
@@ -58,6 +63,7 @@ public class ProblemsResource {
     @Path("{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"admin", "teacher"})
     public ProblemDTO updateProblem(@PathParam("id") int problemId, Problem problem) {
     	Problem res = problemsDAO.updateProblem(problemId, problem);
     	ProblemDTO resDto = mapper.map(res, ProblemDTO.class);
@@ -67,6 +73,7 @@ public class ProblemsResource {
     @GET
     @Path("{id}/tags")
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"admin", "teacher", "user"})
     public List<String> getTags(@PathParam("id") int problemId) {
     	List<Tag> tags = problemsDAO.getTags(problemId);
     	

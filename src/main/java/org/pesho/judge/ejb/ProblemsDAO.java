@@ -23,8 +23,8 @@ public class ProblemsDAO {
     }
     
     public Problem createProblem(Problem problem) {
-    	// TODO
-        return null;
+    	em.persist(problem);
+        return problem;
     }
     
     public Problem getProblem(int problemId) {
