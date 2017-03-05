@@ -1,61 +1,34 @@
-package org.pesho.judge.model;
+package org.pesho.judge.dto;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQuery;
-import javax.persistence.Table;
-
-@Entity
-@NamedQuery(name="Problem.findAll", query="SELECT u FROM Problem u") 
-@Table(name = "problems")
-public class Problem implements Serializable {
+public class ProblemDTO implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
-	@Id
-	@GeneratedValue
-	@Column(name = "id")
 	private int id;
 	
-	@Column(name = "name")
 	private String name;
 	  
-	@Column(name = "version")
 	private String version;
 
-	@Column(name = "description")
 	private String description;
 	
-	// TODO create new table
-	@Column(name = "languages")
 	private String languages;
 
-	@Column(name = "points")
 	private Integer points;
 	
-	@Column(name = "visibility")
 	private String visibility;
 	
-	@ManyToOne
-	@JoinColumn(name = "author")
-	private User author;
+	private Integer authorId;
 
-	@Column(name = "tests")
 	private Integer tests;
 	
-	@Column(name = "source_checker")
 	private String sourceChecker;
 	
-	@Column(name = "test_checker")
 	private String testChecker;
 	
-	public Problem() {
+	public ProblemDTO() {
 	}
 
 	public int getId() {
@@ -114,12 +87,12 @@ public class Problem implements Serializable {
 		this.visibility = visibility;
 	}
 
-	public User getAuthor() {
-		return author;
+	public Integer getAuthorId() {
+		return authorId;
 	}
 
-	public void setAuthor(User author) {
-		this.author = author;
+	public void setAuthorId(Integer authorId) {
+		this.authorId = authorId;
 	}
 
 	public Integer getTests() {
@@ -145,14 +118,4 @@ public class Problem implements Serializable {
 	public void setTestChecker(String testChecker) {
 		this.testChecker = testChecker;
 	}
-	
-	@Override
-	public boolean equals(Object obj) {
-		if(obj instanceof Problem) {
-			return id == ((Problem)obj).id;
-		} else {
-			return false;
-		}
-	}
-	
 }

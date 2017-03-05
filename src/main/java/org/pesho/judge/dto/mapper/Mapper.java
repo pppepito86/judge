@@ -3,7 +3,9 @@ package org.pesho.judge.dto.mapper;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -15,6 +17,13 @@ public class Mapper {
 	@PersistenceContext(unitName = "judge")
 	EntityManager em;
 	
+	public <A, B> List<A> mapList(List<B> copees, Class<A> resultClass) {
+		return copees
+				.stream()
+				.map((x)->map(x, resultClass))
+				.collect(Collectors.toList());
+	}
+	
 	/**
 	 * If the result class has the same field as the input class the field is copied.
 	 * If the result class has the same field concatenated with "Id" or "ID" 
@@ -24,8 +33,12 @@ public class Mapper {
 	 * @param resultClass
 	 * @return
 	 */
-	public <A, B> A copySimilarNames(B copee, Class<A> resultClass) {
+	public <A, B> A map(B copee, Class<A> resultClass) {
 		try {
+			if(copee == null) {
+				return resultClass.newInstance();
+			}
+			
 			A copy = resultClass.newInstance();
 			
 			Class<?> sourceClass = copee.getClass();

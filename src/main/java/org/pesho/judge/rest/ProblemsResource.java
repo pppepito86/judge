@@ -1,11 +1,9 @@
 package org.pesho.judge.rest;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -15,60 +13,67 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.pesho.judge.dto.ProblemDTO;
+import org.pesho.judge.dto.mapper.Mapper;
+import org.pesho.judge.ejb.ProblemsDAO;
 import org.pesho.judge.model.Problem;
 import org.pesho.judge.model.Tag;
 
-@Stateless
 @Path("problems")
 public class ProblemsResource {
 	
-	@PersistenceContext(unitName = "judge")
-	EntityManager em;
+	@Inject 
+	ProblemsDAO problemsDAO;
+	
+	@Inject 
+	Mapper mapper;
 	
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Problem> listProblems() {
-    	TypedQuery<Problem> query = em.createNamedQuery("Problem.findAll", Problem.class);
-    	List<Problem> results = query.getResultList();
-        return results;
+    public List<ProblemDTO> listProblems() {
+    	List<Problem> listProblems = problemsDAO.listProblems();
+    	List<ProblemDTO> listProblemsDTO = mapper.mapList(listProblems, ProblemDTO.class);
+    	return listProblemsDTO;
     }
     
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Problem createProblem(Problem problem) {
-    	// TODO
-        return null;
+    public ProblemDTO createProblem(Problem problem) {
+    	Problem res = problemsDAO.createProblem(problem);
+    	ProblemDTO resDto = mapper.map(res, ProblemDTO.class);
+        return resDto;
     }
     
     @GET
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Problem getProblem(@PathParam("id") int problemId) {
-        Problem problem = em.find(Problem.class, (Integer)problemId);
-    	return problem;
+    public ProblemDTO getProblem(@PathParam("id") int problemId) {
+    	Problem res = problemsDAO.getProblem(problemId); 
+    	ProblemDTO resDto = mapper.map(res, ProblemDTO.class);
+        return resDto;
     }
     
     @PUT
     @Path("{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Problem updateProblem(@PathParam("id") int problemId, Problem problem) {
-    	// TODO:
-        return null;
+    public ProblemDTO updateProblem(@PathParam("id") int problemId, Problem problem) {
+    	Problem res = problemsDAO.updateProblem(problemId, problem);
+    	ProblemDTO resDto = mapper.map(res, ProblemDTO.class);
+        return resDto;
     }
     
     @GET
     @Path("{id}/tags")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Tag> getTags(@PathParam("id") int problemId) {
-    	Problem problem = getProblem(problemId);
+    public List<String> getTags(@PathParam("id") int problemId) {
+    	List<Tag> tags = problemsDAO.getTags(problemId);
     	
-    	TypedQuery<Tag> query = em
-    			.createNamedQuery("Tag.findByProblem", Tag.class)
-    			.setParameter("problem", problem);
+    	List<String> tagsStr = tags.stream()
+    		.map((x)->x.getTag())
+    		.collect(Collectors.toList());
     	
-    	List<Tag> results = query.getResultList();
-        return results;
+        return tagsStr;
     }
 }

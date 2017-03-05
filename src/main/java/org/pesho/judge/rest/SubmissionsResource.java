@@ -2,14 +2,9 @@ package org.pesho.judge.rest;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.annotation.security.PermitAll;
-import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -21,24 +16,20 @@ import javax.ws.rs.core.MediaType;
 
 import org.pesho.judge.dto.SubmissionDTO;
 import org.pesho.judge.dto.mapper.Mapper;
+import org.pesho.judge.ejb.SubmissionsDAO;
 import org.pesho.judge.model.Submission;
 
-@Stateless
 @Path("submissions")
 public class SubmissionsResource {
 	
 	private static final String SORT_LATEST = "latest";
 	private static final String SORT_OLDEST = "oldest";
 	
-	@PersistenceContext(unitName = "judge")
-	EntityManager em;
+	@Inject
+	SubmissionsDAO submissionsDAO;
 	
 	@Inject 
 	Mapper mapper;
-	
-	public List<SubmissionDTO> listSubmisssions() {
-		return listSubmisssions(null, null, null);
-	}
 	
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -47,12 +38,9 @@ public class SubmissionsResource {
     		@QueryParam("start") Integer start,
     		@QueryParam("sort") String sort) {
     	
-    	TypedQuery<Submission> query = em.createNamedQuery("Submission.findAll", Submission.class);
-    	List<Submission> submissionsList = query.getResultList();
+    	List<Submission> submissionsList = submissionsDAO.listSubmisssions();
     	
-    	List<SubmissionDTO> dtoList = submissionsList.stream()
-    		.map((s)->mapper.copySimilarNames(s, SubmissionDTO.class))
-    		.collect(Collectors.toList());
+    	List<SubmissionDTO> dtoList = mapper.mapList(submissionsList, SubmissionDTO.class);
     	
     	if (limit == null) limit = Integer.MAX_VALUE;
     	if (start == null) start = 0;
@@ -73,17 +61,19 @@ public class SubmissionsResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Submission createSubmission(Submission submission) {
-    	// TODO
-        return null;
+    public SubmissionDTO createSubmission(Submission submission) {
+    	Submission res = submissionsDAO.createSubmission(submission);
+    	SubmissionDTO resDto = mapper.map(res, SubmissionDTO.class);
+        return resDto;
     }
     
     @GET
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Submission getSubmission(@PathParam("id") int submissionId) {
-    	Submission submission = em.find(Submission.class, (Integer)submissionId);
-        return submission;
+    public SubmissionDTO getSubmission(@PathParam("id") int submissionId) {
+    	Submission res = submissionsDAO.getSubmission(submissionId);
+    	SubmissionDTO resDto = mapper.map(res, SubmissionDTO.class);
+        return resDto;
     }
     
 }

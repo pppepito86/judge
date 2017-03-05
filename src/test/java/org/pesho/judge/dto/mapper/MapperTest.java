@@ -52,7 +52,7 @@ public class MapperTest  {
 		submission.setCorrect(6);
 		submission.setUser(user);
 		
-		SubmissionDTO copy = mapper.copySimilarNames(submission, SubmissionDTO.class);
+		SubmissionDTO copy = mapper.map(submission, SubmissionDTO.class);
 		
 		assertThat(copy.getId(), is(5));
 		assertThat(copy.getCorrect(), is(6));
@@ -80,7 +80,7 @@ public class MapperTest  {
 		submissionDto.setUserId(user.getId());
 		System.out.println("user id " + user.getId() );
 		
-		Submission copy = mapper.copySimilarNames(submissionDto, Submission.class);
+		Submission copy = mapper.map(submissionDto, Submission.class);
 		
 		System.out.println("copy " + copy);
 		

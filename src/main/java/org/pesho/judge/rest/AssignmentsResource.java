@@ -1,16 +1,8 @@
 package org.pesho.judge.rest;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
-import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -20,110 +12,94 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.pesho.judge.dto.AssignmentDTO;
+import org.pesho.judge.dto.ProblemDTO;
+import org.pesho.judge.dto.SubmissionDTO;
+import org.pesho.judge.dto.mapper.Mapper;
+import org.pesho.judge.ejb.AssignmentDAO;
+import org.pesho.judge.ejb.UserEJB;
 import org.pesho.judge.model.Assignment;
-import org.pesho.judge.model.AssignmentProblem;
 import org.pesho.judge.model.Problem;
 import org.pesho.judge.model.Submission;
-import org.pesho.judge.model.User;
 
-@Stateless
 @Path("assignments")
 public class AssignmentsResource {
 	
-	@PersistenceContext(unitName = "judge")
-	EntityManager em;
+	@Inject
+	AssignmentDAO assignmentsDAO;
+	
+	@Inject 
+	UserEJB usersDAO;
 	
 	@Inject
-	UsersResource usersResource;
+	Mapper mapper;
 	
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Assignment> listAssignments() {
-    	TypedQuery<Assignment> query = em.createNamedQuery("Assignment.findAll", Assignment.class);
-    	List<Assignment> results = query.getResultList();
-    	return results;
+    public List<AssignmentDTO> listAssignments() {
+    	List<Assignment> assignments = assignmentsDAO.listAssignments();
+    	List<AssignmentDTO> assignmentsDTO =  mapper.mapList(assignments, AssignmentDTO.class);
+    	return assignmentsDTO;
     }
     
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Assignment createAssingment(Assignment assignment) {
-    	em.persist(assignment);
-    	
-        return assignment;
+    public AssignmentDTO createAssingment(Assignment assignment) {
+    	Assignment created = assignmentsDAO.createAssingment(assignment);
+    	AssignmentDTO createdDTO = mapper.map(created, AssignmentDTO.class);
+        return createdDTO;
     }
     
     @GET
     @Path("{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Assignment getAssignment(@PathParam("id") int assignmentId) {
-    	Assignment assignment = em.find(Assignment.class, (Integer)assignmentId);
+    public AssignmentDTO getAssignment(@PathParam("id") int assignmentId) {
+    	Assignment assignment = assignmentsDAO.getAssignment(assignmentId);
     	
-        return assignment;
+    	AssignmentDTO assDTO = mapper.map(assignment, AssignmentDTO.class);
+        return assDTO;
     }
     
     @PUT
     @Path("{id}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Assignment updateAssignment(@PathParam("id") int assignmentId, Assignment assignment) {
-        // TODO:
-    	return null;
+    public AssignmentDTO updateAssignment(@PathParam("id") int assignmentId, Assignment assignment) {
+        Assignment updated = assignmentsDAO.updateAssignment(assignmentId, assignment);
+        AssignmentDTO assDTO = mapper.map(updated, AssignmentDTO.class);
+    	return assDTO;
     }
     
     @GET
     @Path("{id}/problems")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Problem> getProblemsPerAssignment(@PathParam("id") int assignmentId) {
-    	Assignment assignment = getAssignment(assignmentId);
+    public List<ProblemDTO> getProblemsPerAssignment(@PathParam("id") int assignmentId) {
     	
-    	TypedQuery<AssignmentProblem> query = em
-    			.createNamedQuery("AssignmentProblem.findByAssignment", AssignmentProblem.class)
-    			.setParameter("assignment", assignment);
-    	
-    	List<AssignmentProblem> assignmentProblems = query.getResultList();
-    	
-    	List<Problem> problems = assignmentProblems
-    		.stream()
-    		.map((AssignmentProblem ap) -> ap.getProblem())
-    		.collect(Collectors.toList());
-    	
-    	System.out.println(problems.toString());
-		return problems;
+    	List<Problem> problems = assignmentsDAO.getProblemsPerAssignment(assignmentId);
+    	List<ProblemDTO> problemsDTO = mapper.mapList(problems, ProblemDTO.class);
+    			
+		return problemsDTO;
     }
     
     @GET
     @Path("{id}/submissions")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Submission> getSubmissions(@PathParam("id") int assignmentId) {
-    	
-    	Assignment assignment = getAssignment(assignmentId);
-    	
-    	TypedQuery<Submission> query = em
-    			.createNamedQuery("Submission.findByAssignment", Submission.class)
-    			.setParameter("assignment", assignment);
-    	
-    	List<Submission> submissions = query.getResultList();
-    	
-		return submissions;
+    public List<SubmissionDTO> getSubmissions(@PathParam("id") int assignmentId) {
+    	List<Submission> submissions = assignmentsDAO.getSubmissions(assignmentId);
+    	List<SubmissionDTO> submissionsDTO = mapper.mapList(submissions, SubmissionDTO.class);
+		return submissionsDTO;
     }
     
     @GET
     @Path("{id}/users/{userId}/submissions")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Submission> getUserSubmissions(@PathParam("id") int assignmentId, 
+    public List<SubmissionDTO> getUserSubmissions(@PathParam("id") int assignmentId, 
     		@PathParam("userId") int userId) {
     	
-    	Assignment assignment = getAssignment(assignmentId);
-    	User user = usersResource.getUser(userId);
-    	
-    	TypedQuery<Submission> query = em
-    			.createNamedQuery("Submission.findByAssignmentAndUser", Submission.class)
-    			.setParameter("assignment", assignment)
-    			.setParameter("user", user);
-    	
-    	List<Submission> submissions = query.getResultList();
-		return submissions;
+    	List<Submission> submissions = assignmentsDAO.getUserSubmissions(assignmentId, userId);
+    	List<SubmissionDTO> submissionsDTO = mapper.mapList(submissions, SubmissionDTO.class);
+		return submissionsDTO;
     }
     
     @GET
@@ -132,22 +108,7 @@ public class AssignmentsResource {
     public int getUserPoints(@PathParam("id") int assignmentId, 
     		@PathParam("userId") int userId) {
     	
-    	List<Submission> submissions = getUserSubmissions(assignmentId, userId);
-    	
-    	Comparator<Submission> submissionComparator = 
-    			(s1, s2) -> s1.getPoints() - s2.getPoints();
-    	
-    	Map<Problem, Optional<Submission>> problemBestToSubmission = submissions
-    		.stream()
-    		.collect(Collectors.groupingBy(Submission::getProblem, Collectors.maxBy(submissionComparator)));
-    	
-    	Integer points = problemBestToSubmission
-    		.values()
-    		.stream()
-    		.filter(Optional<Submission>::isPresent)
-    		.map((s) -> s.get().getPoints())
-    		.collect(Collectors.summingInt(Integer::intValue));
-    	
+    	Integer points = assignmentsDAO.getUserPoints(assignmentId, userId);
 		return points;
     }
 }
