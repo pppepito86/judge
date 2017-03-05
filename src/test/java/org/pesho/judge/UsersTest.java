@@ -1,15 +1,12 @@
 package org.pesho.judge;
 
 import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNot.not;
-import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
 
 import java.util.List;
 
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
-import javax.ws.rs.core.Form;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
@@ -50,17 +47,6 @@ public class UsersTest extends ApplicationBase {
 		assertThat(list.size(), is(2));
 	}
 	
-	private TokenDTO createAdminToken() {
-        Form form = new Form();
-        form.param("username", "admin");
-        form.param("password", "admin");
-        Response response = ClientBuilder.newClient().target(getRequestUrl("authentication/login")).request().post(Entity.form(form));
-        assertThat(response.getStatus(), is(200));
-        TokenDTO tokenDTO = response.readEntity(TokenDTO.class);
-        assertThat(tokenDTO.getToken(), not(nullValue()));
-		return tokenDTO;
-	}
-
 	private void testCreateUser() {
 		User user = createUser();
 		Response response = ClientBuilder.newClient().target(getRequestUrl("users")).request()
