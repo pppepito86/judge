@@ -89,4 +89,7 @@ buildNumber.properties
 # Exclude maven wrapper
 !/.mvn/wrapper/maven-wrapper.jar
 
+# Docker
+.docker/
+
 # End of https://www.gitignore.io/api/java,maven,eclipse
