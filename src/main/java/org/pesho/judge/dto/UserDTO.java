@@ -1,15 +1,34 @@
 package org.pesho.judge.dto;
 
 public class UserDTO {
-	
+
+	private int id;
 	private String username;
 	private String firstname;
 	private String lastname;
 	private String email;
 	private String password;
 	private String password2;
-	
+
 	public UserDTO() {
+	}
+
+	public UserDTO(String username, String firstname, String lastname, String email, String password,
+			String password2) {
+		this.username = username;
+		this.firstname = firstname;
+		this.lastname = lastname;
+		this.email = email;
+		this.password = password;
+		this.password2 = password2;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getUsername() {

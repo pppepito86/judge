@@ -33,7 +33,7 @@ public class JudgeSecurityContext implements SecurityContext {
 
 	@Override
 	public String getAuthenticationScheme() {
-		return null;
+		return "";
 	}
 
 }

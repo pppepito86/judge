@@ -17,9 +17,8 @@ import javax.validation.constraints.NotNull;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 @Entity
-@NamedQueries({
-	@NamedQuery(name="User.findAll", query="SELECT u FROM User u"),
-})
+@NamedQueries({ @NamedQuery(name = "User.findAll", query = "SELECT u FROM User u"),
+		@NamedQuery(name = "User.findByName", query = "SELECT u FROM User u WHERE u.username = :name"), })
 @Table(name = "users")
 public class User implements Serializable {
 
@@ -32,11 +31,11 @@ public class User implements Serializable {
 
 	@NotNull
 	@ManyToOne
-	@JoinColumn(name="roleid")
+	@JoinColumn(name = "roleid")
 	private Role roles;
-	
+
 	@NotNull
-	@Column(name = "username", unique=true, length = 50)
+	@Column(name = "username", unique = true, length = 50)
 	private String username;
 
 	@NotNull
@@ -48,34 +47,33 @@ public class User implements Serializable {
 	private String lastname;
 
 	@NotNull
-	@Column(name = "email", unique=true, length = 50)
+	@Column(name = "email", unique = true, length = 50)
 	private String email;
 
 	@NotNull
-	@Column (name = "passwordhash")
-	//@JsonIgnore
+	@Column(name = "passwordhash")
+	// @JsonIgnore
 	private String passwordHash;
-	
-	@Column (name = "passwordsalt")
+
+	@Column(name = "passwordsalt")
 	@JsonIgnore
 	private String passwordSalt;
-	
+
 	@Column(name = "isdisabled")
 	private boolean isDisabled;
-	
+
 	@Column(name = "validationcode")
 	private String validationCode = "";
-	
+
 	@Column(name = "changepasswordcode")
 	private String changePasswordCode = null;
-	
-	@Column(name = "registrationdate", 
-			columnDefinition="TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+
+	@Column(name = "registrationdate", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	private Timestamp registrationDate;
-	
+
 	public User() {
 	}
-	
+
 	public int getId() {
 		return id;
 	}
@@ -171,6 +169,5 @@ public class User implements Serializable {
 	public void setRegistrationDate(Timestamp registrationDate) {
 		this.registrationDate = registrationDate;
 	}
-	
-	
+
 }

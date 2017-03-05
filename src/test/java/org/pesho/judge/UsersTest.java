@@ -1,12 +1,18 @@
 package org.pesho.judge;
 
 import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.IsNot.not;
+import static org.hamcrest.core.IsNull.nullValue;
 import static org.junit.Assert.assertThat;
 
 import java.net.URL;
+import java.util.List;
 
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
+import javax.ws.rs.core.Form;
+import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -18,6 +24,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.pesho.judge.dto.TokenDTO;
 import org.pesho.judge.model.Role;
 import org.pesho.judge.model.User;
 import org.pesho.judge.rest.JaxRsActivator;
@@ -39,8 +46,10 @@ public class UsersTest {
 				.addPackage(JaxRsActivator.class.getPackage()).addPackage("org.pesho.judge.dto")
 				.addPackage("org.pesho.judge.dto.mapper").addPackage("org.pesho.judge.ejb")
 				.addPackage("org.pesho.judge.model").addPackage("org.pesho.judge.rest")
+				.addPackage("org.pesho.judge.exception")
 				.addPackage("org.pesho.judge.security")
 				.addClass(TestDataCreator.class)
+				.setWebXML("test-web.xml")
 				.addAsResource("test-persistence.xml", "META-INF/persistence.xml");
 		return war;
 	}
@@ -51,22 +60,36 @@ public class UsersTest {
 
 	@Test
 	public void usersTest() throws InterruptedException {
-		//createRoles();
-
 		Response response = ClientBuilder.newClient().target(getRequestUrl("users")).request().get();
-		assertThat(response.getStatus(), is(200));
-		testCreateUser();
-		// String output = response.readEntity(String.class);
-		// System.out.println(output);
-		// System.out.println(response.getStatus());
-	}
-
-	private void createRoles() {
-		Response response = ClientBuilder.newClient().target(getRequestUrl("roles")).request()
-				.post(Entity.entity(Role.USER, MediaType.APPLICATION_JSON));
-		String output = response.readEntity(String.class);
-		System.out.println(output);
+		assertThat(response.getStatus(), is(Response.Status.FORBIDDEN.getStatusCode()));
+		
+		TokenDTO tokenDTO = createAdminToken();
+		System.out.println("Token: " + tokenDTO.getToken());
+		
+		response = ClientBuilder.newClient().target(getRequestUrl("users")).request()
+				.header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenDTO.getToken()).get();
 		assertThat(response.getStatus(), is(Response.Status.OK.getStatusCode()));
+		List<User> list = response.readEntity(new GenericType<List<User>>() {});
+		assertThat(list.size(), is(1));
+		
+		testCreateUser();
+		
+		response = ClientBuilder.newClient().target(getRequestUrl("users")).request()
+				.header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenDTO.getToken()).get();
+		assertThat(response.getStatus(), is(Response.Status.OK.getStatusCode()));
+		list = response.readEntity(new GenericType<List<User>>() {});
+		assertThat(list.size(), is(2));
+	}
+	
+	private TokenDTO createAdminToken() {
+        Form form = new Form();
+        form.param("username", "admin");
+        form.param("password", "admin");
+        Response response = ClientBuilder.newClient().target(getRequestUrl("authentication/login")).request().post(Entity.form(form));
+        assertThat(response.getStatus(), is(200));
+        TokenDTO tokenDTO = response.readEntity(TokenDTO.class);
+        assertThat(tokenDTO.getToken(), not(nullValue()));
+		return tokenDTO;
 	}
 
 	private void testCreateUser() {
