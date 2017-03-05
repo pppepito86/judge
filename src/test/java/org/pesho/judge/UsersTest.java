@@ -22,7 +22,7 @@ import org.pesho.judge.model.User;
 
 @RunWith(Arquillian.class)
 @RunAsClient
-public class UsersTest extends ApplicationBase {
+public class UsersTest extends ClientTestBase {
 
 	@Test
 	public void usersTest() throws InterruptedException {

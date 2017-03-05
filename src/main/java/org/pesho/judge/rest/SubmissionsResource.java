@@ -4,7 +4,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -31,12 +33,16 @@ public class SubmissionsResource {
 	@PersistenceContext(unitName = "judge")
 	EntityManager em;
 	
+	@Inject 
+	Mapper mapper;
+	
 	public List<SubmissionDTO> listSubmisssions() {
 		return listSubmisssions(null, null, null);
 	}
 	
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @PermitAll
     public List<SubmissionDTO> listSubmisssions(@QueryParam("limit") Integer limit, 
     		@QueryParam("start") Integer start,
     		@QueryParam("sort") String sort) {
@@ -45,7 +51,7 @@ public class SubmissionsResource {
     	List<Submission> submissionsList = query.getResultList();
     	
     	List<SubmissionDTO> dtoList = submissionsList.stream()
-    		.map((s)->Mapper.copySimilarNames(s, SubmissionDTO.class))
+    		.map((s)->mapper.copySimilarNames(s, SubmissionDTO.class))
     		.collect(Collectors.toList());
     	
     	if (limit == null) limit = Integer.MAX_VALUE;

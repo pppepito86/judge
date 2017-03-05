@@ -17,8 +17,6 @@ public class SubmissionDTO implements Serializable {
 	
 	private String language;
 	
-	private String sourceFile;
-	
 	private Timestamp time;
 	
 	private String verdict;
@@ -74,14 +72,6 @@ public class SubmissionDTO implements Serializable {
 		this.language = language;
 	}
 
-	public String getSourceFile() {
-		return sourceFile;
-	}
-
-	public void setSourceFile(String sourceFile) {
-		this.sourceFile = sourceFile;
-	}
-
 	public Timestamp getTime() {
 		return time;
 	}
@@ -133,7 +123,7 @@ public class SubmissionDTO implements Serializable {
 	@Override
 	public String toString() {
 		return "SubmissionDTO [id=" + id + ", assignmentId=" + assignmentId + ", problemId=" + problemId + ", userId="
-				+ userId + ", language=" + language + ", sourceFile=" + sourceFile + ", time=" + time + ", verdict="
+				+ userId + ", language=" + language + ", time=" + time + ", verdict="
 				+ verdict + ", reason=" + reason + ", correct=" + correct + ", total=" + total + ", points=" + points
 				+ "]";
 	}

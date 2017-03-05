@@ -24,7 +24,7 @@ import org.pesho.judge.rest.JaxRsActivator;
 
 @RunWith(Arquillian.class)
 @RunAsClient
-public class ApplicationBase {
+public class ClientTestBase {
 
 	@ArquillianResource
 	private URL deploymentUrl;
