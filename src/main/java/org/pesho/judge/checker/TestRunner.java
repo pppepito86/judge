@@ -8,16 +8,15 @@ public class TestRunner {
 	
 	private DockerRunner runner;
 	
-	public TestRunner(File compiledFile, int testNumber) {
+	public TestRunner(File compiledFile, int testNumber, int timeout, int memory) {
 		String javaCommand = "java " + compiledFile.getName().replace(".class", "");
 		String input = "input" + testNumber;
 		String output = "output" + testNumber;
 		String error = "error" + testNumber;
 		String command = String.format("cat %s|%s >%s 2>%s", input, javaCommand, output, error);
-		System.out.println("Command: " + command);
 
 		String workDir = compiledFile.getParentFile().getAbsolutePath();
-		runner = new DockerRunner(command, workDir, 5000);
+		runner = new DockerRunner(command, workDir, timeout, memory);
 	}
 
 	public int run() throws Exception {
@@ -31,6 +30,14 @@ public class TestRunner {
 	
 	public String getError() {
 		return runner.getError();
+	}
+	
+	public long executionTime() {
+		return runner.executionTime();
+	}
+	
+	public boolean isTimedOut() {
+		return runner.isTimedOut();
 	}
 
 }

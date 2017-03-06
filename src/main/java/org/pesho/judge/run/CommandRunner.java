@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -22,6 +23,8 @@ public class CommandRunner {
 	private OutputCollector outputCollector;
 	private OutputCollector errorCollector;
 	private Timer timer;
+	
+	protected volatile boolean timedOut;
 	
 	public CommandRunner(String cmd, String[] args) {
 		this(cmd, args, null, DEFAULT_TIMEOUT);
@@ -43,6 +46,7 @@ public class CommandRunner {
 		} else {
 			this.workDir = new File(".");
 		}
+		System.out.println("command is: " + cmd + " " + Arrays.toString(args));
 	}
 	
 	public int run() throws IOException, InterruptedException {
@@ -63,6 +67,7 @@ public class CommandRunner {
 		TimerTask task = new TimerTask() {
 			@Override
 			public void run() {
+				timedOut = true;
 				kill();
 			}
 		};
@@ -88,6 +93,21 @@ public class CommandRunner {
 	public String getError() {
 		return errorCollector.getOutput();
 	}
+	
+	public boolean isTimedOut() {
+		return timedOut;
+	}
+	
+	public void setTimeout(long timeout) {
+		TimerTask task = new TimerTask() {
+			@Override
+			public void run() {
+				timedOut = true;
+				kill();
+			}
+		};
+		timer.schedule(task, timeout);
+	}
 
 	private OutputCollector stream(InputStream is) {
 		OutputCollector collector = new OutputCollector(is);
@@ -98,7 +118,7 @@ public class CommandRunner {
 	class OutputCollector extends Thread {
 
 		private InputStream is;
-		private StringBuffer buffer = new StringBuffer();
+		private volatile StringBuffer buffer = new StringBuffer();
 
 		public OutputCollector(InputStream is) {
 			this.is = is;
@@ -109,14 +129,16 @@ public class CommandRunner {
 			try {
 				BufferedReader br = new BufferedReader(new InputStreamReader(is));
 				for (String line = br.readLine(); line != null; line = br.readLine()) {
-					buffer.append(line + "\n");
+					synchronized (this) {
+						buffer.append(line + "\n");
+					}
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
 		
-		public String getOutput() {
+		public synchronized String getOutput() {
 			return buffer.toString();
 		}
 

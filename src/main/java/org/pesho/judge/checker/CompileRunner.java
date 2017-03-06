@@ -11,7 +11,7 @@ public class CompileRunner {
 	public CompileRunner(File sourceFile) {
 		String command = "javac " + sourceFile.getName();
 		String workDir = sourceFile.getParentFile().getAbsolutePath();
-		runner = new DockerRunner(command, workDir, 5000);
+		runner = new DockerRunner(command, workDir);
 	}
 
 	public int run() throws Exception {

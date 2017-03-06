@@ -1,6 +1,6 @@
 package org.pesho.judge.run;
 
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeThat;
@@ -13,7 +13,7 @@ import org.junit.Test;
 import org.pesho.judge.checker.CompileRunner;
 import org.pesho.judge.checker.TestRunner;
 
-public class TesterTest {
+public class TesterTLETest {
 
 	private File sourceFile;
 	private File compiledFile;
@@ -27,14 +27,14 @@ public class TesterTest {
 		assumeFalse(System.getProperty("os.name").toLowerCase().contains("win"));
 		int exitCode = new CommandRunner("bash", new String[] { "-c", "which docker" }, 5000).run();
 		assumeThat(exitCode, is(0));
-		sourceFile = new File("src/test/resources/docker/submission/Sum.java");
-		compiledFile = new File("src/test/resources/docker/submission/Sum.class");
+		sourceFile = new File("src/test/resources/docker/submission_tle/TLE.java");
+		compiledFile = new File("src/test/resources/docker/submission_tle/TLE.class");
 		assumeFalse(compiledFile.exists());
 		
 		problemInputFile = new File("src/test/resources/docker/problem/input1");
-		testInputFile = new File("src/test/resources/docker/submission/input1");
-		testOutputFile = new File("src/test/resources/docker/submission/output1");
-		testErrorFile = new File("src/test/resources/docker/submission/error1");
+		testInputFile = new File("src/test/resources/docker/submission_tle/input1");
+		testOutputFile = new File("src/test/resources/docker/submission_tle/output1");
+		testErrorFile = new File("src/test/resources/docker/submission_tle/error1");
 
 		assertThat(
 				new CommandRunner("cp",
@@ -47,10 +47,8 @@ public class TesterTest {
 		assertThat(new CompileRunner(sourceFile).run(), is(0));
 		
 		TestRunner testRunner = new TestRunner(compiledFile, 1, 2000, 64);
-		assertThat(testRunner.run(), is(0));
-		CommandRunner outputCommand = new CommandRunner("cat", new String[] {testOutputFile.getAbsolutePath()});
-		assertThat(outputCommand.run(), is(0));
-		assertThat(outputCommand.getOutput(), is("15\n"));
+		assertThat(testRunner.run(), not(0));
+		assertThat(testRunner.isTimedOut(), is(true));
 	}
 
 	@After
