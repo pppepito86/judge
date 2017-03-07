@@ -11,7 +11,6 @@ import java.io.File;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.pesho.judge.checker.CompileRunner;
 
 public class CompilerTest {
 	

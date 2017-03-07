@@ -9,9 +9,10 @@ import java.io.File;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
-public class TesterMLETest {
+public class TesterFileIOTest {
 
 	private File sourceFile;
 	private File compiledFile;
@@ -25,14 +26,14 @@ public class TesterMLETest {
 		assumeFalse(System.getProperty("os.name").toLowerCase().contains("win"));
 		int exitCode = new CommandRunner("bash", new String[] { "-c", "which docker" }, 5000).run();
 		assumeThat(exitCode, is(0));
-		sourceFile = new File("src/test/resources/docker/submission_mle/MLE.java");
-		compiledFile = new File("src/test/resources/docker/submission_mle/MLE.class");
+		sourceFile = new File("src/test/resources/docker/submission_fileio/FileIO.java");
+		compiledFile = new File("src/test/resources/docker/submission_fileio/FileIO.class");
 		assumeFalse(compiledFile.exists());
 		
 		problemInputFile = new File("src/test/resources/docker/problem/input1");
-		testInputFile = new File("src/test/resources/docker/submission_mle/input1");
-		testOutputFile = new File("src/test/resources/docker/submission_mle/output1");
-		testErrorFile = new File("src/test/resources/docker/submission_mle/error1");
+		testInputFile = new File("src/test/resources/docker/submission_fileio/input1");
+		testOutputFile = new File("src/test/resources/docker/submission_fileio/output1");
+		testErrorFile = new File("src/test/resources/docker/submission_fileio/error1");
 
 		assertThat(
 				new CommandRunner("cp",
@@ -41,12 +42,15 @@ public class TesterMLETest {
 	}
 
 	@Test
+	@Ignore
+	//TODO fix
 	public void testTester() throws Exception {
 		assertThat(new CompileRunner(sourceFile).run(), is(0));
 		
-		TestRunner testRunner = new TestRunner(compiledFile, 1, 2000, 20);
-		assertThat(testRunner.run(), not(0));
-		assertThat(testRunner.isTimedOut(), is(false));
+		TestRunner testRunner = new TestRunner(compiledFile, 1, 2000, 64);
+		assertThat(testRunner.run(), is(0));
+		System.out.println(testRunner.getError());
+		assertThat(testRunner.isTimedOut(), is(true));
 	}
 
 	@After

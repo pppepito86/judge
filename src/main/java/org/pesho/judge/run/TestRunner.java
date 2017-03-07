@@ -1,8 +1,6 @@
-package org.pesho.judge.checker;
+package org.pesho.judge.run;
 
 import java.io.File;
-
-import org.pesho.judge.run.DockerRunner;
 
 public class TestRunner {
 	
