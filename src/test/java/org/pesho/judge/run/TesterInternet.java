@@ -12,7 +12,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class TesterFileIOTest {
+public class TesterInternet {
 
 	private File sourceFile;
 	private File compiledFile;
@@ -26,14 +26,14 @@ public class TesterFileIOTest {
 		assumeFalse(System.getProperty("os.name").toLowerCase().contains("win"));
 		int exitCode = new CommandRunner("bash", new String[] { "-c", "which docker" }, 5000).run();
 		assumeThat(exitCode, is(0));
-		sourceFile = new File("src/test/resources/docker/submission_fileio/FileIO.java");
-		compiledFile = new File("src/test/resources/docker/submission_fileio/FileIO.class");
+		sourceFile = new File("src/test/resources/docker/submission_internet/Internet.java");
+		compiledFile = new File("src/test/resources/docker/submission_internet/Internet.class");
 		assumeFalse(compiledFile.exists());
 		
 		problemInputFile = new File("src/test/resources/docker/problem/input1");
-		testInputFile = new File("src/test/resources/docker/submission_fileio/input1");
-		testOutputFile = new File("src/test/resources/docker/submission_fileio/output1");
-		testErrorFile = new File("src/test/resources/docker/submission_fileio/error1");
+		testInputFile = new File("src/test/resources/docker/submission_internet/input1");
+		testOutputFile = new File("src/test/resources/docker/submission_internet/output1");
+		testErrorFile = new File("src/test/resources/docker/submission_internet/error1");
 
 		assertThat(
 				new CommandRunner("cp",

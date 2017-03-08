@@ -2,13 +2,17 @@ package org.pesho.judge.run;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DockerRunner extends CommandRunner {
 
 	public static final String IMAGE = "pppepito86/judgebox";
 	public static final String BASH = "/bin/bash";
+	public static final String CONTAINER_COMMAND = "bash -c \"echo started && time %s\"";
+	public static final String DOCKER_COMMAND = "docker run %s %s";
 
-	private long timeout;
+	private long originalTimeout;
 
 	public DockerRunner(String cmd) {
 		this(cmd, 5000, 64);
@@ -22,11 +26,38 @@ public class DockerRunner extends CommandRunner {
 		this(cmd, new File(".").getAbsolutePath(), timeout, memory);
 	}
 
-	public DockerRunner(String cmd, String workDir, long timeout, int memory) {
-		super("bash", new String[] { "-c", "docker run -v " + workDir + ":/foo -w /foo --read-only --memory=" + memory
-				+ "m " + IMAGE + " bash -c \"echo started && time  " + cmd + "\"" }, workDir, timeout + 3000);
+	public DockerRunner(String cmd, String workDir, long timeout, int memory, String... files) {
+		this.cmd = "bash";
+		String containerCmd = String.format(CONTAINER_COMMAND, cmd);
+		List<String> dockerArgsList = new ArrayList<>(10);
+		for (int i = 0; i < files.length; i++) {
+			File file = new File(workDir, files[i]);
+			try {
+				file.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			dockerArgsList.add("-v " + workDir + "/" + files[i] + ":/foo/" + files[i]);
+		}
+		if (files.length == 0) {
+			dockerArgsList.add("-v " + workDir + ":/foo");
+		}
+		dockerArgsList.add("-w /foo");
+		dockerArgsList.add("--read-only");
+		dockerArgsList.add("--network none");
+		dockerArgsList.add("--memory=" + memory + "m");
+		dockerArgsList.add(IMAGE);
+		String dockerArgs = "";
+		for (String dockerArg : dockerArgsList) {
+			dockerArgs += " " + dockerArg;
+		}
+		String dockerCmd = String.format(DOCKER_COMMAND, dockerArgs, containerCmd);
 
-		this.timeout = timeout;
+		this.args = new String[] { "-c", dockerCmd };
+		System.out.println("docker command is: " + dockerCmd);
+		this.workDir = new File(workDir);
+		this.timeout = timeout + 3000;
+		this.originalTimeout = timeout;
 	}
 
 	@Override
@@ -38,7 +69,7 @@ public class DockerRunner extends CommandRunner {
 				try {
 					for (int i = 0; i < 50; i++) {
 						if (getOutput().length() != 0) {
-							setTimeout(timeout);
+							setTimeout(originalTimeout);
 							break;
 						}
 						Thread.sleep(100);
@@ -52,7 +83,7 @@ public class DockerRunner extends CommandRunner {
 	@Override
 	public int waitFor() throws InterruptedException {
 		int exitCode = super.waitFor();
-		if (exitCode == 0 && executionTime() > timeout) {
+		if (exitCode == 0 && executionTime() > originalTimeout) {
 			exitCode = 137;
 		}
 		return exitCode;

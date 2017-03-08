@@ -3,7 +3,6 @@ package org.pesho.judge.run;
 import java.io.File;
 
 import org.pesho.judge.checker.DefaultChecker;
-import org.pesho.judge.checker.ExactChecker;
 import org.pesho.judge.model.Submission;
 
 public class SolutionRunner {

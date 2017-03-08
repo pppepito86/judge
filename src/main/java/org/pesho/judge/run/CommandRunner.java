@@ -14,10 +14,10 @@ public class CommandRunner {
 	public static final long DEFAULT_TIMEOUT = 5000;
 	public static final String PATH = "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/usr/local/go/bin";
 
-	private String cmd;
-	private String[] args;
-	private File workDir;
-	private long timeout;
+	protected String cmd;
+	protected String[] args;
+	protected File workDir;
+	protected long timeout;
 
 	private Process process;
 	private OutputCollector outputCollector;
@@ -25,6 +25,9 @@ public class CommandRunner {
 	private Timer timer;
 	
 	protected volatile boolean timedOut;
+	
+	public CommandRunner() {
+	}
 	
 	public CommandRunner(String cmd, String[] args) {
 		this(cmd, args, null, DEFAULT_TIMEOUT);

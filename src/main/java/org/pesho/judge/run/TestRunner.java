@@ -1,6 +1,8 @@
 package org.pesho.judge.run;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TestRunner {
 	
@@ -14,7 +16,16 @@ public class TestRunner {
 		String command = String.format("cat %s|%s >%s 2>%s", input, javaCommand, output, error);
 
 		String workDir = compiledFile.getParentFile().getAbsolutePath();
-		runner = new DockerRunner(command, workDir, timeout, memory);
+		List<String> accessibleFiles = new ArrayList<String>();
+		accessibleFiles.add(input);
+		accessibleFiles.add(output);
+		accessibleFiles.add(error);
+		for (File file: compiledFile.getParentFile().listFiles()) {
+			if (file.getName().endsWith(".class")) {
+				accessibleFiles.add(file.getName());
+			}
+		}
+		runner = new DockerRunner(command, workDir, timeout, memory, accessibleFiles.toArray(new String[0]));
 	}
 
 	public int run() throws Exception {
