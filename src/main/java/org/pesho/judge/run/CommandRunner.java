@@ -26,7 +26,7 @@ public class CommandRunner {
 	
 	protected volatile boolean timedOut;
 	
-	public CommandRunner() {
+	protected CommandRunner() {
 	}
 	
 	public CommandRunner(String cmd, String[] args) {

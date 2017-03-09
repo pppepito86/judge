@@ -9,23 +9,28 @@ public class TestRunner {
 	private DockerRunner runner;
 	
 	public TestRunner(File compiledFile, int testNumber, int timeout, int memory) {
-		String javaCommand = "java " + compiledFile.getName().replace(".class", "");
+		this("java " + compiledFile.getName().replace(".class", ""), compiledFile.getParentFile(), testNumber, timeout, memory);
+	}
+	
+	public TestRunner(String testCommand, File workDir, int testNumber, int timeout, int memory) {
 		String input = "input" + testNumber;
 		String output = "output" + testNumber;
 		String error = "error" + testNumber;
-		String command = String.format("cat %s|%s >%s 2>%s", input, javaCommand, output, error);
+		String command = String.format("cat %s|%s >%s 2>%s", input, testCommand, output, error);
 
-		String workDir = compiledFile.getParentFile().getAbsolutePath();
 		List<String> accessibleFiles = new ArrayList<String>();
 		accessibleFiles.add(input);
 		accessibleFiles.add(output);
 		accessibleFiles.add(error);
-		for (File file: compiledFile.getParentFile().listFiles()) {
+		for (File file: workDir.listFiles()) {
 			if (file.getName().endsWith(".class")) {
 				accessibleFiles.add(file.getName());
 			}
+			if (file.getName().equals("test")) {
+				accessibleFiles.add(file.getName());
+			}
 		}
-		runner = new DockerRunner(command, workDir, timeout, memory, accessibleFiles.toArray(new String[0]));
+		runner = new DockerRunner(command, workDir.getAbsolutePath(), timeout, memory, accessibleFiles.toArray(new String[0]));
 	}
 
 	public int run() throws Exception {

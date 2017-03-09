@@ -12,7 +12,7 @@ import org.junit.Test;
 import org.pesho.judge.model.Problem;
 import org.pesho.judge.model.Submission;
 
-public class SolutionTest {
+public class CppSolutionTest {
 
 	private Submission submission;
 
@@ -22,7 +22,7 @@ public class SolutionTest {
 		int exitCode = new CommandRunner("bash", new String[] { "-c", "which docker" }, 5000).run();
 		assumeThat(exitCode, is(0));
 		
-		String sourceFile = "src/test/resources/workdir/submissions/1/Sum.java";
+		String sourceFile = "src/test/resources/workdir/submissions/2/sum.cpp";
 		Problem problem = new Problem();
 		problem.setId(1);
 		problem.setTests(5);
@@ -35,16 +35,14 @@ public class SolutionTest {
 
 	@Test
 	public void testTester() throws Exception {
-		SolutionRunner solver = new SolutionRunner(submission);
+		SolutionRunner solver = SolutionFactory.getSolutionRunner(submission);
 		solver.run();
 	}
 
 	@After
 	public void after() throws Exception {
-		String testDir = new File("src/test/resources/workdir/submissions/1/test").getAbsolutePath();
-		String outpuDir = new File("src/test/resources/workdir/submissions/1/output").getAbsolutePath();
+		String testDir = new File("src/test/resources/workdir/submissions/2/test").getAbsolutePath();
 		new CommandRunner("bash", new String[]{"-c", "rm -rf " + testDir}).run();
-		new CommandRunner("bash", new String[]{"-c", "rm -rf " + outpuDir}).run();
 	}
 
 }
