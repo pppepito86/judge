@@ -37,6 +37,12 @@ public class ProblemsDAO {
         return null;
     }
     
+    public Problem updateTests(int problemId, int tests) {
+    	Problem problem = this.getProblem(problemId);
+    	problem.setTests(tests);
+    	return problem;
+    }
+    
     public List<Tag> getTags(int problemId) {
     	Problem problem = getProblem(problemId);
     	

@@ -44,7 +44,7 @@ public class CreateProblemResourceTest extends CreateResourceTest<ProblemDTO, Pr
 		assertThat(problem.getPoints(), is(100));
 		assertThat(problem.getSourceChecker(), is("path/to/schecker"));
 		assertThat(problem.getTestChecker(), is("path/to/tchecker"));
-		assertThat(problem.getTests(), is(15));
+		assertThat(problem.getTests(), is(0));
 	}
 
 	@Override

@@ -53,6 +53,7 @@ public class ProblemsResource {
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"admin", "teacher"})
     public ProblemDTO createProblem(ProblemDTO problemDto) {
+    	problemDto.setTests(0);
     	Problem problem = mapper.map(problemDto, Problem.class);
     	Problem res = problemsDAO.createProblem(problem);
     	ProblemDTO resDto = mapper.map(res, ProblemDTO.class);
@@ -61,13 +62,19 @@ public class ProblemsResource {
     
     @PUT
     @Path("{id}/tests")
-    @PermitAll
+    @RolesAllowed({"admin", "teacher"})
     @Consumes(MediaType.APPLICATION_OCTET_STREAM)
     public Response uploadTests(@PathParam("id") int problemId, 
     		InputStream is) throws Exception {
-    	Files.copy(is, FileSystems.getDefault().getPath("src/test/resources/docker/", "tests.zip"));
-    	new CommandRunner("unzip", new String[]{"tests.zip"}, "src/test/resources/docker/", 5000).run();
-    	new File("src/test/resources/docker/", "tests.zip").delete();
+    	new File("src/test/resources/docker/" + problemId).mkdir();
+    	Files.copy(is, FileSystems.getDefault().getPath("src/test/resources/docker/" + problemId, "tests.zip"));
+    	new CommandRunner("unzip", new String[]{"tests.zip"}, "src/test/resources/docker/" + problemId, 15000).run();
+    	new File("src/test/resources/docker/" + problemId, "tests.zip").delete();
+    	CommandRunner testCounter = new CommandRunner("bash", new String[]{"-c", "find . -name \"input*\"|wc -l"}, "src/test/resources/docker/" + problemId, 5000);
+    	testCounter.run();
+		String filesCountString = testCounter.getOutput().trim();
+    	int tests = Integer.parseInt(filesCountString);
+    	problemsDAO.updateTests(problemId, tests);
 		return Response.ok().build();
     }
     

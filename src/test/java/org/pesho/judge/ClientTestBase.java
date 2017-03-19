@@ -41,9 +41,12 @@ public abstract class ClientTestBase {
 				.addPackage("org.pesho.judge.model").addPackage("org.pesho.judge.rest")
 				.addPackage("org.pesho.judge.exception")
 				.addPackage("org.pesho.judge.security")
+				.addPackage("org.pesho.judge.run")
+				.addPackage("org.pesho.judge.config")
 				.addClass(TestDataCreator.class)
 				.setWebXML("test-web.xml")
-				.addAsResource("test-persistence.xml", "META-INF/persistence.xml");
+				.addAsResource("test-persistence.xml", "META-INF/persistence.xml")
+				.addAsResource("config.properties", "META-INF/config.properties");
 		return war;
 	}
 
