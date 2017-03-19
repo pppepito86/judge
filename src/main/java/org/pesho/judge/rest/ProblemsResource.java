@@ -1,8 +1,14 @@
 package org.pesho.judge.rest;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -12,13 +18,17 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.pesho.judge.dto.ProblemDTO;
+import org.pesho.judge.dto.SubmissionDTO;
 import org.pesho.judge.dto.mapper.Mapper;
 import org.pesho.judge.ejb.ProblemsDAO;
 import org.pesho.judge.model.Problem;
 import org.pesho.judge.model.Tag;
+import org.pesho.judge.run.CommandRunner;
 
 @Path("problems")
 public class ProblemsResource {
@@ -47,6 +57,18 @@ public class ProblemsResource {
     	Problem res = problemsDAO.createProblem(problem);
     	ProblemDTO resDto = mapper.map(res, ProblemDTO.class);
         return resDto;
+    }
+    
+    @PUT
+    @Path("{id}/tests")
+    @PermitAll
+    @Consumes(MediaType.APPLICATION_OCTET_STREAM)
+    public Response uploadTests(@PathParam("id") int problemId, 
+    		InputStream is) throws Exception {
+    	Files.copy(is, FileSystems.getDefault().getPath("src/test/resources/docker/", "tests.zip"));
+    	new CommandRunner("unzip", new String[]{"tests.zip"}, "src/test/resources/docker/", 5000).run();
+    	new File("src/test/resources/docker/", "tests.zip").delete();
+		return Response.ok().build();
     }
     
     @GET
