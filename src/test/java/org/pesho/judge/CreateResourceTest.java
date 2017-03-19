@@ -62,13 +62,15 @@ public abstract class CreateResourceTest<T, N> extends ClientTestBase {
 		assertThat(list.size(), is(numElementsBefore + 1));
 	}
 	
+	protected Entity<?> getResourceEntity() {
+		return Entity.entity(createResource(), MediaType.APPLICATION_JSON);
+	}
+	
 	private void testCreateResource() {
-		T resource = createResource();
-		
 		Response response = ClientBuilder.newClient()
 				.target(getRequestUrl(getRousurceURI())).request()
 				.header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenDTO.getToken())
-				.post(Entity.entity(resource, MediaType.APPLICATION_JSON));
+				.post(getResourceEntity());
 		
 		assertThat(response.getStatus(), is(200));
 		

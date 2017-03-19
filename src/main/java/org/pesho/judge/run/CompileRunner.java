@@ -14,6 +14,11 @@ public class CompileRunner {
 
 	public int run() throws Exception {
 		int exitCode = runner.run();
+		System.out.println("compile error: " + runner.getError());
+		if (exitCode != 0) {
+			System.out.println("ERROR");
+			Thread.sleep(100000);
+		}
 		return exitCode;
 	}
 

@@ -30,6 +30,7 @@ public class DockerRunner extends CommandRunner {
 		this.cmd = "bash";
 		String containerCmd = String.format(CONTAINER_COMMAND, cmd);
 		List<String> dockerArgsList = new ArrayList<>(10);
+		dockerArgsList.add("--cidfile cid");
 		for (int i = 0; i < files.length; i++) {
 			File file = new File(workDir, files[i]);
 			try {
@@ -85,6 +86,12 @@ public class DockerRunner extends CommandRunner {
 		int exitCode = super.waitFor();
 		if (exitCode == 0 && executionTime() > originalTimeout) {
 			exitCode = 137;
+		}
+		try {
+			new CommandRunner("bash", new String[]{"-c", "docker kill -s KILL $(cat cid)"}, workDir.getAbsolutePath(), 5000).run();
+			new CommandRunner("rm", new String[]{"cid"}, workDir.getAbsolutePath(), 5000).run();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 		return exitCode;
 	}

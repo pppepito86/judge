@@ -82,6 +82,7 @@ public class CommandRunner {
 		errorCollector.join();
 		int exitCode = process.waitFor();
 		timer.cancel();
+		System.out.println(getError());
 		return exitCode;
 	}
 

@@ -1,7 +1,12 @@
 package org.pesho.judge.rest;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.util.List;
 
+import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -11,6 +16,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
 import org.pesho.judge.dto.AssignmentDTO;
@@ -84,6 +90,23 @@ public class AssignmentsResource {
     	List<ProblemDTO> problemsDTO = mapper.mapList(problems, ProblemDTO.class);
     			
 		return problemsDTO;
+    }
+    
+    @POST
+    @Path("{id}/problems/{problemId}/submissions")
+    @PermitAll
+    @Consumes(MediaType.APPLICATION_OCTET_STREAM)
+    @Produces(MediaType.APPLICATION_JSON)
+    public SubmissionDTO uploadSubmission(@PathParam("id") int assignmentId, 
+    		@PathParam("problemId") int problemId,
+    		@QueryParam("file") String fileName,
+    		InputStream is) throws IOException {
+    	System.out.println("******** -> " + fileName);
+    	Files.copy(is, FileSystems.getDefault().getPath("src/test/resources/docker/", fileName));
+    	SubmissionDTO submissionDTO = new SubmissionDTO();
+    	submissionDTO.setAssignmentId(assignmentId);
+    	submissionDTO.setProblemId(problemId);
+		return submissionDTO;
     }
     
     @GET
