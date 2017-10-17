@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<!-- MENU SECTION -->
+       <div id="left" th:fragment="menu" >
+            <div class="media user-media well-small">
+                <a class="user-link" href="/">
+                    <img class="media-object img-thumbnail user-img" alt="Judge System" src="assets/img/user.png" />
+                </a>
+                <!--br />
+                <div class="media-body">
+                    <h5 class="media-heading"> Joe Romlin</h5>
+                    <ul class="list-unstyled user-info">
+                        
+                        <li>
+                             <a class="btn btn-success btn-xs btn-circle" style="width: 10px;height: 12px;"></a> Online
+                           
+                        </li>
+                       
+                    </ul>
+                </div>
+                <br /-->
+            </div>
+
+            <ul id="menu" class="collapse">
+  
+                <li class="panel" th:if="${role}=='user'">
+                    <a href="index.html" >
+                        <i class="icon-table"></i> Dashboard
+                    </a>                   
+                </li>
+                <li class="panel" th:if="${role}=='teacher'">
+                    <a href="index.html" >
+                        <i class="icon-table"></i> Dashboard
+                    </a>                   
+                </li>
+                <li class="panel">
+                    <a href="groups.html" >
+                        <i class="icon-table"></i> Groups
+                    </a>                   
+                </li>
+                 <li class="panel">
+                    <a href="myassignments.html" >
+                        <i class="icon-table"></i> Assignments
+                    </a>                   
+                </li> 
+               <!-- <li class="panel">
+                    <a href="assignments.html" >
+                        <i class="icon-table"></i> All Assignments
+                    </a>                   
+             </li> -->
+              <li class="panel" th:if="${role}=='admin' OR ${role}=='teacher'">
+                    <a href="myproblems.html" >
+                        <i class="icon-table"></i> My Problems
+                    </a>                   
+                </li>
+              <li class="panel" th:if="${role}=='admin' OR ${role}=='teacher'">
+                    <a href="problems.html" >
+                        <i class="icon-table"></i> All Problems
+                    </a>                   
+                </li>
+               <li class="panel" th:if="${role}=='admin' OR ${role}=='teacher'">
+                    <a href="studentprogress.html" >
+                        <i class="icon-table"></i> Student Progress
+                    </a>                   
+                </li>
+               <li class="panel" th:if="${role}=='admin' OR ${role}=='teacher'">
+                    <a href="myusers.html" >
+                        <i class="icon-table"></i> My Users
+                    </a>                   
+                </li>
+  
+               <li class="panel" th:if="${role}=='admin'">
+                    <a href="users.html" >
+                        <i class="icon-table"></i> All Users
+                    </a>                   
+                </li>
+            </ul>
+
+        </div>
+        <!--END MENU SECTION -->
+
+</html>

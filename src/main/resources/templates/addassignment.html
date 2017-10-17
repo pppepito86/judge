@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<!--[if IE 8]> <html lang="en" class="ie8" xmlns:th="http://www.thymeleaf.org"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9" xmlns:th="http://www.thymeleaf.org"> <![endif]-->
+<!--[if !IE]><!--> <html lang="en" xmlns:th="http://www.thymeleaf.org"> <!--<![endif]-->
+
+ <!-- BEGIN HEAD -->
+<head>
+     <meta charset="UTF-8" />
+    <title>Online Judge</title>
+     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+	<meta content="" name="description" />
+	<meta content="" name="author" />
+     <!--[if IE]>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <![endif]-->
+    <!-- GLOBAL STYLES -->
+    <!-- GLOBAL STYLES -->
+    <link rel="stylesheet" href="assets/plugins/bootstrap/css/bootstrap.css" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <link rel="stylesheet" href="assets/css/theme.css" />
+    <link rel="stylesheet" href="assets/css/MoneAdmin.css" />
+    <link rel="stylesheet" href="assets/plugins/Font-Awesome/css/font-awesome.css" />
+    <!--END GLOBAL STYLES -->
+
+    <!-- PAGE LEVEL STYLES -->
+    <link href="assets/plugins/dataTables/dataTables.bootstrap.css" rel="stylesheet" />
+    <link rel="stylesheet" href="assets/plugins/social-buttons/social-buttons.css" />
+
+ <link href="assets/css/jquery-ui.css" rel="stylesheet" />
+<link rel="stylesheet" href="assets/plugins/uniform/themes/default/css/uniform.default.css" />
+<link rel="stylesheet" href="assets/plugins/inputlimiter/jquery.inputlimiter.1.0.css" />
+<link rel="stylesheet" href="assets/plugins/chosen/chosen.min.css" />
+<link rel="stylesheet" href="assets/plugins/colorpicker/css/colorpicker.css" />
+<link rel="stylesheet" href="assets/plugins/tagsinput/jquery.tagsinput.css" />
+<link rel="stylesheet" href="assets/plugins/daterangepicker/daterangepicker-bs3.css" />
+<link rel="stylesheet" href="assets/plugins/datepicker/css/datepicker.css" />
+<link rel="stylesheet" href="assets/plugins/timepicker/css/bootstrap-timepicker.min.css" />
+<link rel="stylesheet" href="assets/plugins/switch/static/stylesheets/bootstrap-switch.css" />
+
+    <!-- END PAGE LEVEL  STYLES -->
+       <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+</head>
+     <!-- END HEAD -->
+     <!-- BEGIN BODY -->
+<body class="padTop53 " >
+
+     <!-- MAIN WRAPPER -->
+    <div id="wrap">
+
+    <div th:replace="fragments/header :: header">Header is loaded here</div>
+	<div th:replace="fragments/menu :: menu">Menu is loaded here</div>
+
+        <!--PAGE CONTENT -->
+        <div id="content">
+
+            <div class="inner">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <h2> Add Assignment</h2>
+
+
+
+                    </div>
+                </div>
+
+                <hr />
+
+
+                <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                          Assignment
+                        </div>
+                        <div class="panel-body">
+                          <div class="row">
+                            <div class="col-lg-12">
+                              <div id="div-1" class="accordion-body collapse in body">
+                                <form action="/addassignment" method="POST" role="form" >
+
+                <div class="form-group" >
+                    <label>Assignment name</label>
+                    <input type="text" name="assignmentname" id="assignmentname" placeholder="Assignment name" class="form-control" />
+                </div>
+     
+
+                <div class="form-group" >
+                    <label>Start date</label>
+                    	<input type="text" name="startdate" class="form-control" value="15/09/2016" />
+                      <input type="text" name="starttime" value="00:00" class="form-control" />
+                            <!--div class="input-group bootstrap-timepicker"><div class="bootstrap-timepicker-widget dropdown-menu open"><table><tbody><tr><td><a href="#" data-action="incrementHour"><i class="icon-chevron-up"></i></a></td><td class="separator">&nbsp;</td><td><a href="#" data-action="incrementMinute"><i class="icon-chevron-up"></i></a></td><td class="separator">&nbsp;</td><td><a href="#" data-action="incrementSecond"><i class="icon-chevron-up"></i></a></td></tr><tr><td><input type="text" class="bootstrap-timepicker-hour" maxlength="2"></td> <td class="separator">:</td><td><input type="text" class="bootstrap-timepicker-minute" maxlength="2"></td> <td class="separator">:</td><td><input type="text" class="bootstrap-timepicker-second" maxlength="2"></td></tr><tr><td><a href="#" data-action="decrementHour"><i class="icon-chevron-down"></i></a></td><td class="separator"></td><td><a href="#" data-action="decrementMinute"><i class="icon-chevron-down"></i></a></td><td class="separator">&nbsp;</td><td><a href="#" data-action="decrementSecond"><i class="icon-chevron-down"></i></a></td></tr></tbody></table></div>
+                                <input class="timepicker-24 form-control" type="text">
+                                <span class="input-group-addon add-on"><i class="icon-time"></i></span>
+                            </div-->
+                
+                </div >
+
+                <div class="form-group" >
+                    <label>End date</label>
+                    <input type="text" name="enddate" class="form-control" value="15/09/2016" />
+                    <input type="text" name="endtime" value="00:00" class="form-control" />
+                            <!--div class="input-group bootstrap-timepicker"><div class="bootstrap-timepicker-widget dropdown-menu open"><table><tbody><tr><td><a href="#" data-action="incrementHour"><i class="icon-chevron-up"></i></a></td><td class="separator">&nbsp;</td><td><a href="#" data-action="incrementMinute"><i class="icon-chevron-up"></i></a></td><td class="separator">&nbsp;</td><td><a href="#" data-action="incrementSecond"><i class="icon-chevron-up"></i></a></td></tr><tr><td><input type="text" class="bootstrap-timepicker-hour" maxlength="2"></td> <td class="separator">:</td><td><input type="text" class="bootstrap-timepicker-minute" maxlength="2"></td> <td class="separator">:</td><td><input type="text" class="bootstrap-timepicker-second" maxlength="2"></td></tr><tr><td><a href="#" data-action="decrementHour"><i class="icon-chevron-down"></i></a></td><td class="separator"></td><td><a href="#" data-action="decrementMinute"><i class="icon-chevron-down"></i></a></td><td class="separator">&nbsp;</td><td><a href="#" data-action="decrementSecond"><i class="icon-chevron-down"></i></a></td></tr></tbody></table></div>
+                                <input class="timepicker-24 form-control" type="text">
+                                <span class="input-group-addon add-on"><i class="icon-time"></i></span>
+                            </div-->
+                
+                </div >
+
+                <div class="form-group" >
+                    <label>Problems</label>
+                    <input type="text" name="problem1" id="problem1" placeholder="Problem ids, comma-separated" class="form-control" />
+                </div>
+     
+               <div class="form-group" >
+                    <label>Group</label>
+                    <input type="text" name="groupid" id="groupid" placeholder="Group id" class="form-control" />
+                </div>
+                
+               <div class="form-group" >
+                <label>
+                    <input type="checkbox" name="test-info" value="hide" /> Hide test info
+                </label>
+              </div >
+
+              <div class="form-group" >
+                <label>
+                    <input type="checkbox" name="standings" value="hide" /> Show top 5 standings
+                </label>
+              </div >
+                                  
+              <div class="form-group" >
+                <label>Prejudge checks</label> <br/>
+                <label class="col-lg-3 col-sm-12">
+                    <input type="checkbox" name="goto" value="on" checked="checked" /> No goto statements
+                </label>
+                <label class="col-lg-3 col-sm-12">
+                    <input type="checkbox" name="no_float" value="on" />No float variables
+                </label>
+                <label class="col-lg-3 col-sm-12">
+                    <input type="checkbox" name="fast_cin" value="on" checked="checked" /> Fast input/output
+                </label>
+                <label class="col-lg-3 col-sm-12">
+                    <input type="checkbox" name="consecutive_newlines" value="on" checked="checked" /> No consecutive newlines
+                </label>
+                <label class="col-lg-3 col-sm-12">
+                    <input type="checkbox" name="floating_point_comp" value="on" checked="checked" /> Only safe floating point comparisons
+                </label>
+                <label class="col-lg-3 col-sm-12">
+                    <input type="checkbox" name="debug_macro" value="on" checked="checked" /> Use debug macro instead of cout-s
+                </label>
+              </div >
+                                    
+              <div class="form-group" >
+                  <div class="col-lg-4">
+                  </div>
+                  <div class="col-lg-8">
+                      <input type="submit" class="btn btn-default btn-lg" />
+                  </div>
+              </div>
+
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+              </div>
+
+
+
+
+    </div>
+       <!--END PAGE CONTENT -->
+
+
+    </div>
+
+     <!--END MAIN WRAPPER -->
+
+    <div th:replace="fragments/footer :: footer">Footer is loaded here</div>
+
+     <!-- GLOBAL SCRIPTS -->
+    <script src="assets/plugins/jquery-2.0.3.min.js"></script>
+     <script src="assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/plugins/modernizr-2.6.2-respond-1.1.0.min.js"></script>
+    <!-- END GLOBAL SCRIPTS -->
+        <!-- PAGE LEVEL SCRIPTS -->
+    <script src="assets/plugins/dataTables/jquery.dataTables.js"></script>
+    <script src="assets/plugins/dataTables/dataTables.bootstrap.js"></script>
+
+ <script src="assets/js/jquery-ui.min.js"></script>
+ <script src="assets/plugins/uniform/jquery.uniform.min.js"></script>
+<script src="assets/plugins/inputlimiter/jquery.inputlimiter.1.3.1.min.js"></script>
+<script src="assets/plugins/chosen/chosen.jquery.min.js"></script>
+<script src="assets/plugins/colorpicker/js/bootstrap-colorpicker.js"></script>
+<script src="assets/plugins/tagsinput/jquery.tagsinput.min.js"></script>
+<script src="assets/plugins/validVal/js/jquery.validVal.min.js"></script>
+<script src="assets/plugins/daterangepicker/daterangepicker.js"></script>
+<script src="assets/plugins/daterangepicker/moment.min.js"></script>
+<script src="assets/plugins/datepicker/js/bootstrap-datepicker.js"></script>
+<script src="assets/plugins/timepicker/js/bootstrap-timepicker.min.js"></script>
+<script src="assets/plugins/switch/static/js/bootstrap-switch.min.js"></script>
+<script src="assets/plugins/jquery.dualListbox-1.3/jquery.dualListBox-1.3.min.js"></script>
+<script src="assets/plugins/autosize/jquery.autosize.min.js"></script>
+<script src="assets/plugins/jasny/js/bootstrap-inputmask.js"></script>
+       <script src="assets/js/formsInit.js"></script>
+
+     <script>
+        $(function () { formInit(); });
+
+         $(document).ready(function () {
+             $('#dataTables-example').dataTable();
+         });
+    </script>
+     <!-- END PAGE LEVEL SCRIPTS -->
+</body>
+     <!-- END BODY -->
+</html>

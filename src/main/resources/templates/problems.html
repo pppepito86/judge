@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<!--[if IE 8]> <html lang="en" class="ie8" xmlns:th="http://www.thymeleaf.org"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9" xmlns:th="http://www.thymeleaf.org"> <![endif]-->
+<!--[if !IE]><!--> <html lang="en" xmlns:th="http://www.thymeleaf.org"> <!--<![endif]-->
+
+ <!-- BEGIN HEAD -->
+<head>
+     <meta charset="UTF-8" />
+    <title>Online Judge</title>
+     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+	<meta content="" name="description" />
+	<meta content="" name="author" />
+     <!--[if IE]>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <![endif]-->
+    <!-- GLOBAL STYLES -->
+    <!-- GLOBAL STYLES -->
+    <link rel="stylesheet" th:href="@{assets/plugins/bootstrap/css/bootstrap.css}" />
+    <link rel="stylesheet" th:href="@{assets/css/main.css}" />
+    <link rel="stylesheet" th:href="@{assets/css/theme.css}" />
+    <link rel="stylesheet" th:href="@{assets/css/MoneAdmin.css}" />
+    <link rel="stylesheet" th:href="@{assets/plugins/Font-Awesome/css/font-awesome.css}" />
+    <!--END GLOBAL STYLES -->
+
+    <!-- PAGE LEVEL STYLES -->
+    <link th:href="@{assets/plugins/dataTables/dataTables.bootstrap.css}" rel="stylesheet" />
+    <link rel="stylesheet" th:href="@{assets/plugins/social-buttons/social-buttons.css}" />
+    <!-- END PAGE LEVEL  STYLES -->
+       <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script th:src="@{https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js}"></script>
+      <script th:src="@{https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js}"></script>
+    <![endif]-->
+</head>
+     <!-- END HEAD -->
+     <!-- BEGIN BODY -->
+<body class="padTop53 " >
+
+     <!-- MAIN WRAPPER -->
+    <div id="wrap">
+
+    <div th:replace="fragments/header :: header">Header is loaded here</div>
+	<div th:replace="fragments/menu :: menu">Menu is loaded here</div>
+
+        <!--PAGE CONTENT -->
+        <div id="content">
+
+            <div class="inner">
+                <div class="row">
+                    <div class="col-lg-12">
+
+
+                        <h2> Problems </h2>
+
+
+
+                    </div>
+                </div>
+
+                <hr />
+
+
+                <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                           Problems&nbsp; 
+                            <a th:href="@{/addproblem.html}" class="btn btn-default btn-sm btn-grad">+Add</a>
+                        </div>
+                        <div class="panel-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-bordered table-hover" id="dataTables-example">
+                                    <thead>
+                                        <tr>
+                                            <th>Id</th>
+                                            <th>Problem name</th>
+                                            <th>Version</th>
+                                            <th>Tags</th>
+                                            <th>Author</th>
+                                            <th style="width: 70px;">Rejudge</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="problem: ${problems}">
+                                            <td th:text="${problem.id}">id</td>
+                                            <td><a th:href="@{/problem.html(id=${problem.id})}" th:text="${problem.name}">name</a></td>
+                                            <td th:text="${problem.version}"></td>
+                                            <td> <span th:each="tag: ${problem.tags}" th:text="|#${tag.tag}|">tag</span> </td>
+                                            <td class="center" th:text="${problem.author}">author</td>
+                                            <td class="center" style="text-align: center">
+                                            	<a th:href="@{/rejudge(id=${problem.id})}" class="text-muted text-center btn btn-default btn-sm btn-grad">X</a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                           
+                        </div>
+                    </div>
+                </div>
+            </div>
+                  </div>
+
+
+
+
+        </div>
+       <!--END PAGE CONTENT -->
+
+
+    </div>
+
+     <!--END MAIN WRAPPER -->
+
+    <div th:replace="fragments/footer :: footer">Footer is loaded here</div>
+
+     <!-- GLOBAL SCRIPTS -->
+    <script th:src="@{assets/plugins/jquery-2.0.3.min.js}"></script>
+     <script th:src="@{assets/plugins/bootstrap/js/bootstrap.min.js}"></script>
+    <script th:src="@{assets/plugins/modernizr-2.6.2-respond-1.1.0.min.js}"></script>
+    <!-- END GLOBAL SCRIPTS -->
+        <!-- PAGE LEVEL SCRIPTS -->
+    <script th:src="@{assets/plugins/dataTables/jquery.dataTables.js}"></script>
+    <script th:src="@{assets/plugins/dataTables/dataTables.bootstrap.js}"></script>
+     <script>
+         $(document).ready(function () {
+             $('#dataTables-example').dataTable();
+         });
+    </script>
+     <!-- END PAGE LEVEL SCRIPTS -->
+</body>
+     <!-- END BODY -->
+</html>
