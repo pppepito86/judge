@@ -47,6 +47,7 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (id, roleid, username, firstname, lastname, email, passwordhash, passwordsalt, isdisabled) VALUES (1,1,'pesho','Petar','Petrov','pppepito86@gmail.com','$2a$10$xJQ1V9Xu1x5b5jphJIOwOuTW3YZKeu/UXyQUIMW5EX914cyiz1XQG','$2a$10$xJQ1V9Xu1x5b5jphJIOwOuTW3YZKeu/UXyQUIMW5EX914cyiz1XQG',0);
 INSERT INTO `users` (id, roleid, username, firstname, lastname, email, passwordhash, passwordsalt, isdisabled) VALUES (2,2,'teacher','Daskal','Daskalov','teacher@gmail.com','$2a$10$xJQ1V9Xu1x5b5jphJIOwOuTW3YZKeu/UXyQUIMW5EX914cyiz1XQG','$2a$10$xJQ1V9Xu1x5b5jphJIOwOuTW3YZKeu/UXyQUIMW5EX914cyiz1XQG',0);
+INSERT INTO `users` (id, roleid, username, firstname, lastname, email, passwordhash, passwordsalt, isdisabled) VALUES (3,3,'student','Ivancho','Mariikov','st@gmail.com','$2a$10$xJQ1V9Xu1x5b5jphJIOwOuTW3YZKeu/UXyQUIMW5EX914cyiz1XQG','$2a$10$xJQ1V9Xu1x5b5jphJIOwOuTW3YZKeu/UXyQUIMW5EX914cyiz1XQG',0);
 
 --
 -- Table structure for table `userroles`
