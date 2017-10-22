@@ -12,7 +12,7 @@ public class UserService {
 	@Autowired
 	private JdbcTemplate template;
 	
-	public Long getCurrentUserId() {
+	public Integer getCurrentUserId() {
 		String name = getCurrentUserName();
 		return getUserId(name);
 	}
@@ -27,9 +27,17 @@ public class UserService {
 		return auth.getAuthorities().stream().map(auths -> auths.getAuthority()).findFirst().orElse("guest");
 	}
 	
-	public Long getUserId(String username) {
+	public boolean isAdmin() {
+		return "admin".equals(getCurrentUserRole());
+	}
+	
+	public boolean isTeacher() {
+		return "teacher".equals(getCurrentUserRole());
+	}
+	
+	public Integer getUserId(String username) {
 		return template.queryForObject("select id from users where username=?", 
-				new Object[] {username}, Long.class);
+				new Object[] {username}, Integer.class);
 	}
 	
 }

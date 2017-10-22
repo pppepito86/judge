@@ -77,6 +77,7 @@ CREATE TABLE `groups` (
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `groups` VALUES (1,'public','public',1);
+INSERT INTO `groups` VALUES (2,'9b','smg',2);
 
 --
 -- Table structure for table `usergroups`
@@ -93,6 +94,10 @@ CREATE TABLE `usergroups` (
   CONSTRAINT `usergroups_ibfk_1` FOREIGN KEY (`userid`) REFERENCES `users` (`id`),
   CONSTRAINT `usergroups_ibfk_2` FOREIGN KEY (`groupid`) REFERENCES `groups` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+INSERT INTO usergroups(id, userid, groupid, roleid) VALUES(1, 1, 1, 0);
+INSERT INTO usergroups(id, userid, groupid, roleid) VALUES(2, 2, 1, 0);
+INSERT INTO usergroups(id, userid, groupid, roleid) VALUES(3, 3, 1, 0);
 
 --
 -- Table structure for table `problems`
@@ -116,7 +121,9 @@ CREATE TABLE `problems` (
   CONSTRAINT `problems_ibfk_1` FOREIGN KEY (`author`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO problems(id, name, version, description, languages, visibility, author, points) VALUES(1, 'a+b', 'version', 'namerete sbora na chislata a i b', 'java', 'private', 1, 100);
+INSERT INTO problems(id, name, version, description, languages, visibility, author, points) VALUES(1, 'a+b', '', 'namerete sbora na chislata a i b', '{"c++":{"Language":"c++","TimeLimit":1000,"MemoryLimit":64},"java":{"Language":"java","TimeLimit":1000,"MemoryLimit":64}}', 'public', 1, 100);
+INSERT INTO problems(id, name, version, description, languages, visibility, author, points) VALUES(2, 'a*b', '', 'namerete proizvedenieto na chislata a i b', '{"c++":{"Language":"c++","TimeLimit":1000,"MemoryLimit":64},"java":{"Language":"java","TimeLimit":1000,"MemoryLimit":64}}', 'private', 2, 100);
+INSERT INTO problems(id, name, version, description, languages, visibility, author, points) VALUES(3, 'a+b', 'v2', 'namerete sbora na chislata a i b', '{"c++":{"Language":"c++","TimeLimit":1000,"MemoryLimit":64},"java":{"Language":"java","TimeLimit":1000,"MemoryLimit":64}}', 'private', 1, 100);
 
 --
 -- Table structure for table `tags` 

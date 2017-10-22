@@ -11,6 +11,7 @@ public class AddProblemDao {
     private String tags;
     private String text;
     private String test;
+    private String language;
     private String visibility;
     private String points;
     private Optional<MultipartFile> file;
@@ -54,6 +55,14 @@ public class AddProblemDao {
     public void setTest(String test) {
         this.test = test;
     }
+    
+    public String getLanguage() {
+		return language;
+	}
+    
+    public void setLanguage(String language) {
+		this.language = language;
+	}
 
     public String getVisibility() {
         return visibility;
