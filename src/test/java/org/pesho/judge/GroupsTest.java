@@ -62,11 +62,11 @@ public class GroupsTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(group))).andExpect(status().isCreated());
 
-		mvc.perform(get("/api/v1/groups").header("Authorization", ADMIN_AUTH)).andExpect(jsonPath("$", hasSize(2)))
-				.andExpect(jsonPath("$[1].groupname", is("5a")))
-				.andExpect(jsonPath("$[1].description", is("smg")))
-				.andExpect(jsonPath("$[1].creatorid", is(2)))
-				.andExpect(jsonPath("$[1].username", is("teacher")));
+		mvc.perform(get("/api/v1/groups").header("Authorization", ADMIN_AUTH)).andExpect(jsonPath("$", hasSize(3)))
+				.andExpect(jsonPath("$[2].groupname", is("5a")))
+				.andExpect(jsonPath("$[2].description", is("smg")))
+				.andExpect(jsonPath("$[2].creatorid", is(2)))
+				.andExpect(jsonPath("$[2].username", is("teacher")));
 	}
 	
 	@Test

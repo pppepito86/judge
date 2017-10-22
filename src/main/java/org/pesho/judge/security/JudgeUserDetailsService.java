@@ -21,11 +21,9 @@ public class JudgeUserDetailsService implements UserDetailsService {
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		System.out.println("***username: " + username);
 		Optional<Map<String, Object>> result = template.queryForList(
 				"select username, passwordhash, rolename from users inner join roles on roleid = roles.id where username=?", 
 				new Object[] {username}).stream().findFirst();
-		System.out.println(result);
 		
 		return result.map(user -> new User(
 				user.get("username").toString(), 

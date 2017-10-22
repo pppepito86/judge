@@ -27,12 +27,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		auth.userDetailsService(judgeUserDetailsService).passwordEncoder(passwordEncoder);
 	}
 	
-	//@Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		// http.csrf().disable().authorizeRequests()
-		// .anyRequest().authenticated()
-		// .and().httpBasic();
 	     http
          .authorizeRequests()
          	.antMatchers("/api/**").authenticated()
@@ -40,31 +36,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
              .and()
              .httpBasic();		
 	     http.csrf().disable();
-		// http.authorizeRequests().antMatchers("/api/v1/login").authenticated();
-
-		// http.authorizeRequests().antMatchers("/index.html", "/home.html",
-		// "/login.html", "/").permitAll().anyRequest()
-		// .authenticated();
-		// http.httpBasic();
 	}
-
-	// @Override
-	// protected void configure(HttpSecurity http) throws Exception {
-	// http.authorizeRequests()
-	// .antMatchers("/api/**").permitAll();
-	// .antMatchers("/**");
-	/*
-	 * .hasAuthority("admin") .antMatchers("/admin/**").hasAuthority("admin")
-	 * .antMatchers("/assets/**").permitAll()
-	 * .antMatchers("/login.html").permitAll() .anyRequest()
-	 * .authenticated().and().csrf().disable().formLogin()
-	 * .loginPage("/login.html").failureUrl("/login.html")
-	 * .defaultSuccessUrl("/dashboard.html") .and().logout()
-	 * .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-	 * .logoutSuccessUrl("/").and().exceptionHandling()
-	 * .accessDeniedPage("/access-denied");
-	 */
-	// }
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
