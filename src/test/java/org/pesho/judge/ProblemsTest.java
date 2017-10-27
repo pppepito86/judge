@@ -1,22 +1,32 @@
 package org.pesho.judge;
 
 import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static org.hamcrest.Matchers.*;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.fileUpload;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.InputStream;
+import java.util.zip.ZipInputStream;
+
 import javax.ws.rs.core.MediaType;
 
+import org.apache.commons.io.FileUtils;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.pesho.judge.daos.AddProblemDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -41,13 +51,21 @@ public class ProblemsTest {
 
 	@Autowired
 	private WebApplicationContext context;
-
+	
+    @Value("${work.dir}")
+    private String workDir;
+	
 	private MockMvc mvc;
 	private ObjectMapper objectMapper = new ObjectMapper();
 
 	@Before
 	public void setUp() {
 		this.mvc = MockMvcBuilders.webAppContextSetup(this.context).apply(springSecurity()).build();
+	}
+	
+	@After
+	public void clean() throws Exception {
+		FileUtils.deleteDirectory(new File(workDir));
 	}
 
 	@Test
@@ -103,21 +121,30 @@ public class ProblemsTest {
 
 	@Test
 	public void testCreateProblem() throws Exception {
-		AddProblemDao problem = createProblem();
-		mvc.perform(post("/api/v1/problems").contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(problem))).andExpect(status().isUnauthorized());
-		mvc.perform(post("/api/v1/problems").header("Authorization", STUDENT_AUTH)
-				.contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(problem)))
-				.andExpect(status().isForbidden());
+		String id = this.mvc.perform(fileUpload("/api/v1/problems")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(createProblem()))
+				.header("Authorization", TEACHER_AUTH))
+				.andExpect(status().isCreated()).andReturn().getResponse().getContentAsString();
 
-		mvc.perform(post("/api/v1/problems").header("Authorization", TEACHER_AUTH)
-				.contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(problem)))
-				.andExpect(status().isCreated());
-
+		InputStream is = this.getClass().getClassLoader().getResourceAsStream("tests.zip");
+		MockMultipartFile multipartFile = new MockMultipartFile("file", "tests.zip", "text/plain", is);
+		this.mvc.perform(fileUpload("/api/v1/problems/"+id+"/tests").file(multipartFile)
+				.contentType(MediaType.APPLICATION_OCTET_STREAM)
+				.header("Authorization", TEACHER_AUTH))
+				.andExpect(status().isOk());
+		
 		mvc.perform(get("/api/v1/problems").header("Authorization", TEACHER_AUTH)).andExpect(jsonPath("$", hasSize(3)))
-				.andExpect(jsonPath("$[2].name", is("a+b+c")));
+			.andExpect(jsonPath("$[2].name", is("a+b+c")));
+		
+		byte[] tests = this.mvc.perform(get("/api/v1/problems/"+id+"/tests")
+				.header("Authorization", TEACHER_AUTH))
+				.andExpect(status().isOk()).andReturn().getResponse().getContentAsByteArray();
+		ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(tests));
+		assertThat(zis.getNextEntry().getName(), is("output1"));
+		assertThat(zis.getNextEntry().getName(), is("input1"));
 	}
-
+	
 	private AddProblemDao createProblem() {
 		AddProblemDao problem = new AddProblemDao();
 		problem.setProblemname("a+b+c");

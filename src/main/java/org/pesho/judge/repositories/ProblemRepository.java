@@ -87,7 +87,7 @@ public class ProblemRepository {
 	}
 
 	@Transactional
-	public void createProblem(AddProblemDao problem) {
+	public int createProblem(AddProblemDao problem) {
 		long authorId = userService.getCurrentUserId();
 		template.update(
 				"INSERT INTO problems(name, version, description, languages, visibility, author, points) VALUES(?, ?, ?, ?, ?, ?, ?)",
@@ -102,6 +102,8 @@ public class ProblemRepository {
 				continue;
 			template.update("INSERT INTO tags(problemid, tag) VALUES(?, ?)", new Object[] { first.get(), tag });
 		}
+		
+		return (int) first.get();
 	}
 
 	public void createTag(long problemId, String tag) {

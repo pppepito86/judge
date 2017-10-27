@@ -7,9 +7,11 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 @SpringBootApplication
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class JudgeApplication {
-
+	
 	public static void main(String[] args) {
 		SpringApplication.run(JudgeApplication.class, args);
 	}
+	
+	
 	
 }
