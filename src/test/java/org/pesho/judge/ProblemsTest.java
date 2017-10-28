@@ -135,7 +135,8 @@ public class ProblemsTest {
 				.andExpect(status().isOk());
 		
 		mvc.perform(get("/api/v1/problems").header("Authorization", TEACHER_AUTH)).andExpect(jsonPath("$", hasSize(3)))
-			.andExpect(jsonPath("$[2].name", is("a+b+c")));
+			.andExpect(jsonPath("$[2].name", is("a+b+c")))
+			.andExpect(jsonPath("$[2].tags[0].tag", is("easy")));
 		
 		byte[] tests = this.mvc.perform(get("/api/v1/problems/"+id+"/tests")
 				.header("Authorization", TEACHER_AUTH))
