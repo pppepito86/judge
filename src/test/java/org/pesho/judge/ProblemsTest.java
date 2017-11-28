@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.util.Arrays;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.http.entity.ContentType;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -62,8 +63,7 @@ public class ProblemsTest {
 	@Test
 	public void testCreateProblem() throws Exception {
 		mvc.perform(get("/api/v1/problems")).andExpect(jsonPath("$", hasSize(0)));
-		
-		MockMultipartFile multipartMetadata = new MockMultipartFile("metadata", objectMapper.writeValueAsBytes(createProblem()));
+		MockMultipartFile multipartMetadata = new MockMultipartFile("metadata", null, ContentType.APPLICATION_JSON.getMimeType(), objectMapper.writeValueAsBytes(createProblem()));
 		InputStream is = this.getClass().getClassLoader().getResourceAsStream("tests.zip");
 		MockMultipartFile multipartFile = new MockMultipartFile("file", "tests.zip", "text/plain", is);
 		this.mvc.perform(fileUpload("/api/v1/problems/1")
