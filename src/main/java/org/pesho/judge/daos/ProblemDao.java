@@ -1,20 +1,17 @@
 package org.pesho.judge.daos;
 
-import org.springframework.web.multipart.MultipartFile;
+import java.util.List;
 
-import java.util.Optional;
-
-public class AddProblemDao {
-
+public class ProblemDao {
+	
     private String problemname;
     private String version;
     private String tags;
     private String text;
     private String test;
-    private String language;
     private String visibility;
     private String points;
-    private Optional<MultipartFile> file;
+    private List<LanguageDao> languages;
 
     public String getProblemname() {
         return problemname;
@@ -55,14 +52,6 @@ public class AddProblemDao {
     public void setTest(String test) {
         this.test = test;
     }
-    
-    public String getLanguage() {
-		return language;
-	}
-    
-    public void setLanguage(String language) {
-		this.language = language;
-	}
 
     public String getVisibility() {
         return visibility;
@@ -80,11 +69,12 @@ public class AddProblemDao {
         this.points = points;
     }
 
-    public Optional<MultipartFile> getFile() {
-        return file;
-    }
-
-    public void setFile(Optional<MultipartFile> file) {
-        this.file = file;
-    }
+    public List<LanguageDao> getLanguages() {
+		return languages;
+	}
+    
+    public void setLanguages(List<LanguageDao> languages) {
+		this.languages = languages;
+	}
+    
 }

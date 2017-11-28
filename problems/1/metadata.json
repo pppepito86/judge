@@ -1,0 +1,1 @@
+{"problemname":"a+b+c","version":"v1","tags":"easy","text":"namerete sbora na chislata a, b i c","test":"1 2 3\n#\n6\n","visibility":"public","points":"100","languages":[{"language":"c++","timeLimit":1000,"memoryLimit":64},{"language":"java","timeLimit":1000,"memoryLimit":64}]}
