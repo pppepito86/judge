@@ -1,14 +1,18 @@
 package org.pesho.judge.rest;
 
+import java.io.File;
 import java.util.Collection;
+import java.util.Optional;
 
-//import javax.ws.rs.Consumes;
-//import javax.ws.rs.core.MediaType;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.core.MediaType;
+
 import org.pesho.grader.SubmissionGrader;
-
+import org.pesho.grader.task.TaskTests;
 import org.pesho.judge.daos.ProblemDao;
 import org.pesho.judge.daos.SubmissionDao;
 import org.pesho.judge.problems.ProblemsCache;
+import org.pesho.judge.problems.SubmissionsStorage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -31,6 +35,9 @@ public class RestService {
 	@Autowired
 	private ProblemsCache problemsCache;
 
+	@Autowired
+	private SubmissionsStorage submissionsStorage;
+
 	@GetMapping("/health-check")
 	public String healthCheck() {
 		return "ok";
@@ -52,12 +59,16 @@ public class RestService {
 	}
 
 	@PostMapping("/problems/{problem_id}")
-//	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	public ResponseEntity<?> addProblem(@PathVariable("problem_id") String problemId,
-			@RequestPart("metadata") ProblemDao problem, 
+			@RequestPart(name = "metadata", required = false) Optional<ProblemDao> problem,
 			@RequestPart("file") MultipartFile file) throws Exception {
 		try {
-			problemsCache.addProblem(Integer.valueOf(problemId), problem, file.getInputStream());
+			if (problem.isPresent()) {
+				problemsCache.addProblem(Integer.valueOf(problemId), problem.get(), file.getInputStream());
+			} else {
+				problemsCache.addProblem(Integer.valueOf(problemId), file.getInputStream());
+			}
 			return new ResponseEntity<>(HttpStatus.CREATED);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.CONFLICT);
@@ -65,17 +76,20 @@ public class RestService {
 	}
 
 	@PostMapping("/submissions/{submission_id}")
-//	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	public ResponseEntity<?> addSubmission(@PathVariable("submission_id") String problemId,
-			@RequestPart("metadata") SubmissionDao submission, 
-			@RequestPart("file") MultipartFile file) throws Exception {
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	public ResponseEntity<?> addSubmission(@PathVariable("submission_id") String submissionId,
+			@RequestPart(name = "metadata", required = false) Optional<SubmissionDao> submission, @RequestPart("file") MultipartFile file)
+			throws Exception {
 		try {
-//			SubmissionGrader grader = new SubmissionGrader();
-			return new ResponseEntity<>(HttpStatus.CREATED);
+			File submissionFile = submissionsStorage.storeSubmission(submissionId, "solve.cpp",
+					file.getInputStream());
+			TaskTests taskTests = problemsCache.getProbleNew(1);
+			SubmissionGrader grader = new SubmissionGrader(taskTests, submissionFile.getAbsolutePath());
+			grader.grade();
+			return new ResponseEntity<>(grader.getScore(), HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.CONFLICT);
 		}
 	}
 
-	
 }
