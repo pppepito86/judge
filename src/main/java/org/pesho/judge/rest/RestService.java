@@ -2,10 +2,12 @@ package org.pesho.judge.rest;
 
 import java.util.Collection;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.core.MediaType;
+//import javax.ws.rs.Consumes;
+//import javax.ws.rs.core.MediaType;
+import org.pesho.grader.SubmissionGrader;
 
 import org.pesho.judge.daos.ProblemDao;
+import org.pesho.judge.daos.SubmissionDao;
 import org.pesho.judge.problems.ProblemsCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -50,11 +52,10 @@ public class RestService {
 	}
 
 	@PostMapping("/problems/{problem_id}")
-	@Consumes(MediaType.MULTIPART_FORM_DATA)
+//	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	public ResponseEntity<?> addProblem(@PathVariable("problem_id") String problemId,
-			@RequestPart("metadata") ProblemDao problem,
-			@RequestPart("file") MultipartFile file)
-			throws Exception {
+			@RequestPart("metadata") ProblemDao problem, 
+			@RequestPart("file") MultipartFile file) throws Exception {
 		try {
 			problemsCache.addProblem(Integer.valueOf(problemId), problem, file.getInputStream());
 			return new ResponseEntity<>(HttpStatus.CREATED);
@@ -63,4 +64,18 @@ public class RestService {
 		}
 	}
 
+	@PostMapping("/submissions/{submission_id}")
+//	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	public ResponseEntity<?> addSubmission(@PathVariable("submission_id") String problemId,
+			@RequestPart("metadata") SubmissionDao submission, 
+			@RequestPart("file") MultipartFile file) throws Exception {
+		try {
+//			SubmissionGrader grader = new SubmissionGrader();
+			return new ResponseEntity<>(HttpStatus.CREATED);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.CONFLICT);
+		}
+	}
+
+	
 }
