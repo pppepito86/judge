@@ -8,7 +8,7 @@ import java.util.zip.ZipFile;
 
 import org.apache.commons.io.FileUtils;
 import org.pesho.grader.task.TaskParser;
-import org.pesho.grader.task.TaskTests;
+import org.pesho.grader.task.TaskDetails;
 import org.pesho.judge.daos.ProblemDao;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -37,7 +37,7 @@ public class ProblemsStorage {
 		}
 	}
 
-	public TaskTests storeProblem(int id, InputStream is) {
+	public TaskDetails storeProblem(int id, InputStream is) {
 		File problemsDir = new File(workDir, "problems");
 		File problemDir = new File(problemsDir, String.valueOf(id));
 		problemDir.mkdirs();
@@ -59,7 +59,7 @@ public class ProblemsStorage {
 
 			File problemMetadata = new File(problemDir, "metadata.json");
 			TaskParser taskParser = new TaskParser(problemDir);
-			TaskTests taskTests = TaskTests.create(taskParser);
+			TaskDetails taskTests = TaskDetails.create(taskParser);
 			FileUtils.writeByteArrayToFile(problemMetadata, objectMapper.writeValueAsBytes(taskTests));
 			return taskTests;
 			

@@ -8,7 +8,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.core.MediaType;
 
 import org.pesho.grader.SubmissionGrader;
-import org.pesho.grader.task.TaskTests;
+import org.pesho.grader.task.TaskDetails;
 import org.pesho.judge.daos.ProblemDao;
 import org.pesho.judge.daos.SubmissionDao;
 import org.pesho.judge.problems.ProblemsCache;
@@ -83,7 +83,7 @@ public class RestService {
 		try {
 			File submissionFile = submissionsStorage.storeSubmission(submissionId, "solve.cpp",
 					file.getInputStream());
-			TaskTests taskTests = problemsCache.getProbleNew(1);
+			TaskDetails taskTests = problemsCache.getProbleNew(1);
 			SubmissionGrader grader = new SubmissionGrader(taskTests, submissionFile.getAbsolutePath());
 			grader.grade();
 			return new ResponseEntity<>(grader.getScore(), HttpStatus.OK);
