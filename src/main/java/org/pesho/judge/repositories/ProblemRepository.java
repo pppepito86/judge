@@ -1,6 +1,5 @@
 package org.pesho.judge.repositories;
 
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,8 +14,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Configuration
@@ -37,6 +34,7 @@ public class ProblemRepository {
 		while (it.hasNext()) {
 			Map<String, Object> next = it.next();
 			next.put("tags", getTags((int) next.get("id")));
+			fixLanguage(next);
 		}
 		return problems;
 	}
@@ -51,6 +49,7 @@ public class ProblemRepository {
 		while (it.hasNext()) {
 			Map<String, Object> next = it.next();
 			next.put("tags", getTags((int) next.get("id")));
+			fixLanguage(next);
 		}
 		return problems;
 	}
@@ -63,10 +62,10 @@ public class ProblemRepository {
 			Map<String, Object> next = it.next();
 			List<Map<String, Object>> tags = template.queryForList("select tag from tags where problemid=?",
 					new Object[] { next.get("id") });
-			System.out.println("tagovete sa: " + tags);
 			if (tags == null)
 				tags = new LinkedList<>();
 			next.put("tags", tags);
+			fixLanguage(next);
 		}
 		return problems;
 	}
@@ -76,24 +75,28 @@ public class ProblemRepository {
 		Optional<Map<String, Object>> problem = template
 				.queryForList("select * from problems where id=?", new Object[] { id }).stream().findFirst();
 		if (problem.isPresent()) {
-			try {
-				String languagesString = (String) problem.get().get("languages");
-				ObjectMapper mapper = new ObjectMapper();
-				System.out.println(languagesString);
-				Languages languages = mapper.readValue(languagesString, Languages.class);
-				problem.get().put("languages", languages);
-			} catch (Exception e) {
-				throw new IllegalStateException(e);
-			}
-			
 			List<Map<String, Object>> tags = template.queryForList("select tag from tags where problemid=?",
 					new Object[] { problem.get().get("id") });
 			if (tags == null) {
 				tags = new LinkedList<>();
 			}
 			problem.get().put("tags", tags);
+			fixLanguage(problem.get());
 		}
 		return problem;
+	}
+
+	private void fixLanguage(Map<String, Object> problem) {
+		if (problem.get("languages") == null) return;
+		
+		String languagesString = (String) problem.get("languages");
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			Languages languages = mapper.readValue(languagesString, Languages.class);
+			problem.put("languages", languages);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public List<Map<String, Object>> getTags(int problemId) {

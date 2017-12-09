@@ -139,11 +139,14 @@ public class ProblemsTest {
 				.contentType(MediaType.APPLICATION_OCTET_STREAM)
 				.header("Authorization", TEACHER_AUTH))
 				.andExpect(status().isCreated());
+
+		String resp = mvc.perform(get("/api/v1/problems").header("Authorization", TEACHER_AUTH)).andReturn().getResponse().getContentAsString();
 		
 		mvc.perform(get("/api/v1/problems").header("Authorization", TEACHER_AUTH)).andExpect(jsonPath("$", hasSize(3)))
 			.andExpect(jsonPath("$[2].name", is("a+b+c")))
-			.andExpect(jsonPath("$[2].tags[0].tag", is("easy")));
-//			.andExpect(jsonPath("$[2].languages.java.Language", is("c++")));
+			.andExpect(jsonPath("$[2].tags[0].tag", is("easy")))
+			.andExpect(jsonPath("$[2].languages.c++.Language", is("c++")))
+			.andExpect(jsonPath("$[2].languages.java.Language", is("java")));
 		
 		byte[] tests = this.mvc.perform(get("/api/v1/problems/"+id+"/tests")
 				.header("Authorization", TEACHER_AUTH))
