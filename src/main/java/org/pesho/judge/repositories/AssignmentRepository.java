@@ -43,7 +43,7 @@ public class AssignmentRepository {
 				" inner join users on assignments.author = users.id"+
 				" inner join groups on assignments.groupid = groups.id"+
 				" inner join usergroups on assignments.groupid = usergroups.groupid and usergroups.userid = ?", 
-				new Object[] {userId});
+				userId);
 	}
 	
 	@Transactional
@@ -51,7 +51,7 @@ public class AssignmentRepository {
 		Optional<Map<String, Object>> assignment = template.queryForList(
 				"select assignments.id, assignments.name, assignments.author, assignments.groupid, users.username, groups.groupname, assignments.starttime, assignments.endtime, assignments.testinfo, assignments.standings from assignments"+
 				" inner join users on assignments.id=? and assignments.author = users.id"+
-				" inner join groups on assignments.groupid = groups.id", new Object[] {id}).stream().findFirst();
+				" inner join groups on assignments.groupid = groups.id", id).stream().findFirst();
 		if (assignment.isPresent()) {
 			assignment.get().put("problems", listAssignmentProblems((int) assignment.get().get("id")));
 		}
@@ -62,15 +62,14 @@ public class AssignmentRepository {
     public int createAssignment(AddAssignmentDao assignment) {
         int authorId = userService.getCurrentUserId();
         template.update("INSERT INTO assignments(name, author, groupid, starttime, endtime, testinfo, standings) VALUES(?, ?, ?, ?, ?, ?, ?)",
-                new Object[] {
-                        assignment.getName(),
-                        authorId,
-                        assignment.getGroupid(),
-                        null,
-                        null,
-                        assignment.getTestinfo().orElse("show"),
-                        assignment.getStandings().orElse("")
-                });
+        		assignment.getName(),
+        		authorId,
+        		assignment.getGroupid(),
+        		null,
+        		null,
+        		assignment.getTestinfo().orElse("show"),
+        		assignment.getStandings().orElse("")
+        		);
 		Optional<Object> first = template.queryForList("SELECT MAX(id) FROM assignments").stream()
 				.map(x -> x.get("MAX(id)")).findFirst();
 		
@@ -88,7 +87,7 @@ public class AssignmentRepository {
 		if (problem.isPresent()) {
 			template.update(
 				"INSERT INTO assignmentproblems(assignmentid, problemid, number, points) VALUES(?, ?, ?, ?)",
-				new Object[] {assignmentId, problemId, number, problem.get().get("points")});
+				assignmentId, problemId, number, problem.get().get("points"));
 		}
 	}
 	
@@ -96,7 +95,7 @@ public class AssignmentRepository {
 		return template.queryForList(
 				"select assignmentproblems.id, assignmentid, problemid, assignmentproblems.number, assignmentproblems.points, problems.name from assignmentproblems" + 
 				" inner join problems on assignmentproblems.assignmentid=? and assignmentproblems.problemid=problems.id order by assignmentproblems.number",
-				new Object[] {assignmentId});
+				assignmentId);
 	}
 
 }

@@ -1,7 +1,5 @@
 package org.pesho.judge.daos;
 
-import org.springframework.web.bind.annotation.RequestParam;
-
 import java.util.Optional;
 
 public class AddAssignmentDao {

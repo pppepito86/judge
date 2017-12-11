@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS `submissiondetails`;
+DROP TABLE IF EXISTS `submissions`;
 DROP TABLE IF EXISTS `assignmentproblems`;
 DROP TABLE IF EXISTS `assignments`;
 DROP TABLE IF EXISTS `tags`;
@@ -181,3 +183,45 @@ CREATE TABLE `assignmentproblems` (
   CONSTRAINT `assignmentproblems_ibfk_1` FOREIGN KEY (`assignmentid`) REFERENCES `assignments` (`id`),
   CONSTRAINT `assignmentproblems_ibfk_2` FOREIGN KEY (`problemid`) REFERENCES `problems` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Table structure for table `submissions`
+--
+
+CREATE TABLE `submissions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `assignmentid` int(11) NOT NULL,
+  `problemid` int(11) NOT NULL,
+  `userid` int(11) NOT NULL,
+  `language` varchar(50) NOT NULL,
+  `sourcefile` varchar(100) NOT NULL,
+  `time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `verdict` varchar(50) NOT NULL,
+  `reason` varchar(1000) DEFAULT NULL,
+  `correct` int(11) DEFAULT NULL,
+  `total` int(11) DEFAULT NULL,
+  `points` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `assignmentid` (`assignmentid`),
+  KEY `problemid` (`problemid`),
+  KEY `userid` (`userid`),
+  CONSTRAINT `submissions_ibfk_1` FOREIGN KEY (`assignmentid`) REFERENCES `assignments` (`id`),
+  CONSTRAINT `submissions_ibfk_2` FOREIGN KEY (`problemid`) REFERENCES `problems` (`id`),
+  CONSTRAINT `submissions_ibfk_3` FOREIGN KEY (`userid`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=214 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Table structure for table `submissiondetails`
+--
+
+CREATE TABLE `submissiondetails` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `submissionid` int(11) NOT NULL,
+  `step` varchar(50) NOT NULL,
+  `status` varchar(50) NOT NULL,
+  `reason` varchar(1000) NOT NULL,
+  `time` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `submissionid` (`submissionid`),
+  CONSTRAINT `submissiondetails_ibfk_1` FOREIGN KEY (`submissionid`) REFERENCES `submissions` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=188 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

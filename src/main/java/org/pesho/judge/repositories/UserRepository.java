@@ -29,20 +29,19 @@ public class UserRepository {
     
 	public void createUser(@RequestBody AddUserDao user) {
 		template.update("INSERT INTO users(roleid, username, firstname, lastname, email, passwordhash, passwordsalt, isdisabled, validationcode) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)", 
-				new Object[] {
-						3, 
-						user.getUsername(),
-						user.getFirstname(),
-						user.getLastname(),
-						user.getEmail(),
-						user.getPassword(),
-						user.getPassword(),
-						false,
-						UUID.randomUUID().toString()});
+			3, 
+			user.getUsername(),
+			user.getFirstname(),
+			user.getLastname(),
+			user.getEmail(),
+			user.getPassword(),
+			user.getPassword(),
+			false,
+			UUID.randomUUID().toString());
 	}
 	
 	public void updateRole(int userId, EditRoleDao role) {
-		template.update("update users set roleid=? where id=?", new Object[] {role.getRoleid(), userId});
+		template.update("update users set roleid=? where id=?", role.getRoleid(), userId);
 	}
 	
 	public List<Map<String, Object>> studentsForTeacher(int teacherId) {
@@ -50,11 +49,11 @@ public class UserRepository {
 				" inner join users as u on u.id = ug.userid"+
 				" inner join groups as g on ug.groupid=g.id and g.creatorid = ?"+
 				" inner join roles as r on u.roleid = r.id", 
-				new Object[] {teacherId});
+				teacherId);
 	}
 	
 	public void validateUser(int code) {
-		template.update("update users set validationcode='' where validationcode=?", new Object[] {code});
+		template.update("update users set validationcode='' where validationcode=?", code);
 	}
 
 	

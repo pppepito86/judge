@@ -140,8 +140,6 @@ public class ProblemsTest {
 				.header("Authorization", TEACHER_AUTH))
 				.andExpect(status().isCreated());
 
-		String resp = mvc.perform(get("/api/v1/problems").header("Authorization", TEACHER_AUTH)).andReturn().getResponse().getContentAsString();
-		
 		mvc.perform(get("/api/v1/problems").header("Authorization", TEACHER_AUTH)).andExpect(jsonPath("$", hasSize(3)))
 			.andExpect(jsonPath("$[2].name", is("a+b+c")))
 			.andExpect(jsonPath("$[2].tags[0].tag", is("easy")))
@@ -168,7 +166,6 @@ public class ProblemsTest {
 		problem.setText("namerete sbora na chislata a, b i c");
 		problem.setTest("1 2 3\n#\n6\n");
 		problem.setLanguages(new Languages(new Language("c++", 1000, 64), new Language("java", 1000, 64)));
-//		problem.setLanguage("{\"c++\":{\"Language\":\"c++\",\"TimeLimit\":1000,\"MemoryLimit\":64}}");
 		problem.setVisibility("public");
 		problem.setPoints("100");
 		problem.setTags("easy");

@@ -19,6 +19,7 @@ import org.apache.commons.io.FileUtils;
 import org.pesho.judge.UserService;
 import org.pesho.judge.daos.AddProblemDao;
 import org.pesho.judge.repositories.ProblemRepository;
+import org.pesho.judge.security.JudgeUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;

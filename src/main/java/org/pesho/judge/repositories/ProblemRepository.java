@@ -44,7 +44,7 @@ public class ProblemRepository {
 		List<Map<String, Object>> problems = template.queryForList(
 				"select problems.id, problems.name, problems.version, problems.points, problems.description, problems.languages, problems.visibility, problems.author, users.username from problems"
 						+ " inner join users on problems.author = users.id where problems.author=? OR problems.visibility='public'",
-				new Object[] { teacherId });
+				teacherId);
 		Iterator<Map<String, Object>> it = problems.iterator();
 		while (it.hasNext()) {
 			Map<String, Object> next = it.next();
@@ -56,12 +56,12 @@ public class ProblemRepository {
 
 	public List<Map<String, Object>> listAuthorProblems(int authorId) {
 		List<Map<String, Object>> problems = template.queryForList("select * from problems where author=?",
-				new Object[] { authorId });
+				authorId);
 		Iterator<Map<String, Object>> it = problems.iterator();
 		while (it.hasNext()) {
 			Map<String, Object> next = it.next();
 			List<Map<String, Object>> tags = template.queryForList("select tag from tags where problemid=?",
-					new Object[] { next.get("id") });
+					next.get("id"));
 			if (tags == null)
 				tags = new LinkedList<>();
 			next.put("tags", tags);
@@ -73,10 +73,10 @@ public class ProblemRepository {
 	@Transactional
 	public Optional<Map<String, Object>> getProblem(int id) {
 		Optional<Map<String, Object>> problem = template
-				.queryForList("select * from problems where id=?", new Object[] { id }).stream().findFirst();
+				.queryForList("select * from problems where id=?", id).stream().findFirst();
 		if (problem.isPresent()) {
 			List<Map<String, Object>> tags = template.queryForList("select tag from tags where problemid=?",
-					new Object[] { problem.get().get("id") });
+					problem.get().get("id"));
 			if (tags == null) {
 				tags = new LinkedList<>();
 			}
@@ -100,7 +100,7 @@ public class ProblemRepository {
 	}
 
 	public List<Map<String, Object>> getTags(int problemId) {
-		return template.queryForList("select tag from tags where problemid=?", new Object[] { problemId });
+		return template.queryForList("select tag from tags where problemid=?", problemId);
 	}
 
 	@Transactional
@@ -108,8 +108,8 @@ public class ProblemRepository {
 		int authorId = userService.getCurrentUserId();
 		template.update(
 				"INSERT INTO problems(name, version, description, languages, visibility, author, points) VALUES(?, ?, ?, ?, ?, ?, ?)",
-				new Object[] { problem.getProblemname(), problem.getVersion(), problem.getText(), problem.getLanguagesJson(),
-						problem.getVisibility(), authorId, problem.getPoints() });
+				problem.getProblemname(), problem.getVersion(), problem.getText(), problem.getLanguagesJson(),
+						problem.getVisibility(), authorId, problem.getPoints());
 		Optional<Object> first = template.queryForList("SELECT MAX(id) FROM problems").stream()
 				.map(x -> x.get("MAX(id)")).findFirst();
 
@@ -117,14 +117,14 @@ public class ProblemRepository {
 			tag = tag.trim();
 			if (tag.isEmpty())
 				continue;
-			template.update("INSERT INTO tags(problemid, tag) VALUES(?, ?)", new Object[] { first.get(), tag });
+			template.update("INSERT INTO tags(problemid, tag) VALUES(?, ?)", first.get(), tag);
 		}
 		
 		return (int) first.get();
 	}
 
 	public void createTag(int problemId, String tag) {
-		template.update("INSERT INTO tags(problemid, tag) VALUES(?, ?)", new Object[] { problemId, tag });
+		template.update("INSERT INTO tags(problemid, tag) VALUES(?, ?)", problemId, tag);
 	}
 
 	public void deleteTags(int problemId) {
