@@ -1,5 +1,7 @@
 package org.pesho.judge.repositories;
 
+import static org.pesho.judge.repositories.SqlUtil.limit;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -23,27 +25,40 @@ public class AssignmentRepository {
     @Autowired
     private ProblemRepository problemRepository;
     
-	public List<Map<String, Object>> listAssignments() {
+	public List<Map<String, Object>> listAllAssignments(int page, int size) {
 		return template.queryForList(
 				"select assignments.id, assignments.name, assignments.author, assignments.groupid, users.username, groups.groupname, assignments.starttime, assignments.endtime from assignments" +
 				" inner join users on assignments.author = users.id" +
-				" inner join groups on assignments.groupid = groups.id");
+				" inner join groups on assignments.groupid = groups.id" +
+				" order by id desc " + limit(page, size));
 	}
 	
-	public List<Map<String, Object>> listAuthorAssignments(int authorId) {
+	public List<Map<String, Object>> listAuthorAssignments(int authorId, int page, int size) {
 		return template.queryForList(
-				"select assignments.id, assignments.name, assignments.author, assignments.groupid, users.username, groups.groupname, assignments.starttime, assignments.endtime from assignments"+
-				" inner join users on assignments.author = users.id and assignments.author = ?"+
-				" inner join groups on assignments.groupid = groups.id", authorId);
+				"select assignments.id, assignments.name, assignments.author, assignments.groupid, users.username, groups.groupname, assignments.starttime, assignments.endtime from assignments" +
+				" inner join users on assignments.author = users.id and assignments.author = ?" +
+				" inner join groups on assignments.groupid = groups.id" +
+				" order by id desc " + limit(page, size), authorId);
 	}
 	
-	public List<Map<String, Object>> listUserAssignments(int userId) {
+	public List<Map<String, Object>> listUserAssignments(int userId, int page, int size) {
 		return template.queryForList(
-				"select assignments.id, assignments.name, assignments.author, assignments.groupid, users.username, groups.groupname, assignments.starttime, assignments.endtime from assignments"+
-				" inner join users on assignments.author = users.id"+
-				" inner join groups on assignments.groupid = groups.id"+
-				" inner join usergroups on assignments.groupid = usergroups.groupid and usergroups.userid = ?", 
+				"select assignments.id, assignments.name, assignments.author, assignments.groupid, users.username, groups.groupname, assignments.starttime, assignments.endtime from assignments" +
+				" inner join users on assignments.author = users.id" +
+				" inner join groups on assignments.groupid = groups.id" +
+				" inner join usergroups on assignments.groupid = usergroups.groupid and usergroups.userid = ?" +
+				" order by id desc " + limit(page, size),
 				userId);
+	}
+	
+	public List<Map<String, Object>> listGroupAssignments(int groupId, int page, int size) {
+		return template.queryForList(
+				"select assignments.id, assignments.name, assignments.author, assignments.groupid, users.username, groups.groupname, assignments.starttime, assignments.endtime from assignments" +
+				" inner join users on assignments.author = users.id" +
+				" inner join groups on assignments.groupid = groups.id" +
+				" inner join usergroups on assignments.groupid = usergroups.groupid and assignments.groupid = ?" +
+				" order by id desc " + limit(page, size),
+				groupId);
 	}
 	
 	@Transactional
