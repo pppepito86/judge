@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 
 import org.pesho.judge.UserService;
@@ -51,7 +50,7 @@ public class UsersRestService {
 	}
 		
 	@PutMapping("/users/validate={code}")
-	public void validateUser(@PathParam("code") int code) {
+	public void validateUser(@PathVariable("code") int code) {
 		repository.validateUser(code);
 	}
 	

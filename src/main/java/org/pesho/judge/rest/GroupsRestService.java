@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.Consumes;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 
 import org.pesho.judge.UserService;
@@ -44,6 +43,18 @@ public class GroupsRestService {
 		}
 	}
 
+	@GetMapping("/groups/{id}")
+	@PreAuthorize("hasAnyAuthority({'admin','teacher','user'})")
+	public List<Map<String, Object>> getGroup(@PathVariable("id") int id) {
+		if (userService.isAdmin()) {
+			return repository.listGroups();
+		} else if (userService.isTeacher()) {
+			return repository.listGroupsForTeacher(userService.getCurrentUserId());
+		} else {
+			return repository.listGroupsForUser(userService.getCurrentUserId());
+		}
+	}
+	
 	@PostMapping("/groups")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@PreAuthorize("hasAnyAuthority({'admin','teacher'})")
@@ -54,7 +65,7 @@ public class GroupsRestService {
 	
 	@GetMapping("/groups/{group_id}/users")
 	@PreAuthorize("hasAnyAuthority({'admin','teacher'})")
-	public List<Map<String, Object>> studentsInGroup(@PathParam("group_id") int groupId) {
+	public List<Map<String, Object>> studentsInGroup(@PathVariable("group_id") int groupId) {
 		return repository.studentsInGroup(groupId);
 	}
 

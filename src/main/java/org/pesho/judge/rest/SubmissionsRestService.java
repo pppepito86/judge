@@ -44,24 +44,33 @@ public class SubmissionsRestService {
 	@Autowired
 	private SubmissionsQueue queue;
 
-	@GetMapping("/assignments/{id}/submissions2")
+	@GetMapping("/submissions")
 	@PreAuthorize("hasAnyAuthority({'admin','teacher','user'})")
-	public List<Map<String, Object>> listMyAssignmentSubmissions(
-			@PathVariable("id") int id,
-			@RequestParam(value = "page", defaultValue = "1") Integer page,
-			@RequestParam(value = "size", defaultValue = "10") Integer size) {
-		return repository.listUserAssignmentSubmissions(userService.getCurrentUserId(), id, page, size);
-	}
-	
-	@GetMapping("/submissions2")
-	@PreAuthorize("hasAnyAuthority({'admin','teacher','user'})")
-	public List<Map<String, Object>> listMySubmissions(
+	public List<Map<String, Object>> listSubmissions(
 			@RequestParam(value = "page", defaultValue = "1") Integer page,
 			@RequestParam(value = "size", defaultValue = "10") Integer size) {
 		return repository.listUserAllSubmissions(userService.getCurrentUserId(), page, size);
 	}
 	
-	@GetMapping("/assignments/{id}/submissions")
+	@GetMapping("/submissions/users/{user_id}")
+	@PreAuthorize("hasAnyAuthority({'admin','teacher','user'})")
+	public List<Map<String, Object>> listUserSubmissions(
+			@PathVariable("user_id") int userId,
+			@RequestParam(value = "page", defaultValue = "1") Integer page,
+			@RequestParam(value = "size", defaultValue = "10") Integer size) {
+		return repository.listUserAllSubmissions(userId, page, size);
+	}
+
+	@GetMapping("/submissions/groups/{group_id}")
+	@PreAuthorize("hasAnyAuthority({'admin','teacher','user'})")
+	public List<Map<String, Object>> listGroupSubmissions(
+			@PathVariable("group_id") int groupId,
+			@RequestParam(value = "page", defaultValue = "1") Integer page,
+			@RequestParam(value = "size", defaultValue = "10") Integer size) {
+		return repository.listGroupAllSubmissions(groupId, page, size);
+	}
+	
+	@GetMapping("/submissions/assignments/{id}")
 	@PreAuthorize("hasAnyAuthority({'admin','teacher','user'})")
 	public List<Map<String, Object>> listSubmissions(@PathVariable("id") int id) {
 		if (userService.isAdmin()) {

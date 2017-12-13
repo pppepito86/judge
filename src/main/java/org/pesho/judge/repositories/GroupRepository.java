@@ -39,6 +39,11 @@ public class GroupRepository {
 				+ " inner join users on groups.creatorid = users.id", userId);
 	}
 
+	public Optional<Map<String, Object>> getGroup(int groupId) {
+		return template.queryForList("select id, groupname, description, creatorid from groups where id=?",
+				groupId).stream().findFirst();
+	}
+	
 	public Optional<Map<String, Object>> getGroup(String groupName) {
 		return template.queryForList("select id, groupname, description, creatorid from groups where groupname=?",
 				groupName).stream().findFirst();

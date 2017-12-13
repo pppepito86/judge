@@ -1,5 +1,7 @@
 package org.pesho.judge.repositories;
 
+import static org.pesho.judge.repositories.SqlUtil.limit;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -79,6 +81,14 @@ public class SubmissionRepository {
 				" order by id desc"+
 				" limit "+ (page-1)*size + "," + size +
 				userId);
+	}
+	
+	public List<Map<String, Object>> listGroupAllSubmissions(int groupId, int page, int size) {
+		return template.queryForList(
+				"select submissions.id, time, assignmentid, problemid, points from submissions" +
+				" inner join assignments on assignments.id=submissions.assignmentid where assignments.groupid=?" +
+				" order by id desc " + limit(page, size) +
+				groupId);
 	}
 	
 	public List<Map<String, Object>> listAssignmentSubmissions(int assignmentId) {
