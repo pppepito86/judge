@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -43,6 +44,23 @@ public class SubmissionsRestService {
 	@Autowired
 	private SubmissionsQueue queue;
 
+	@GetMapping("/assignments/{id}/submissions2")
+	@PreAuthorize("hasAnyAuthority({'admin','teacher','user'})")
+	public List<Map<String, Object>> listMyAssignmentSubmissions(
+			@PathVariable("id") int id,
+			@RequestParam(value = "page", defaultValue = "1") Integer page,
+			@RequestParam(value = "size", defaultValue = "10") Integer size) {
+		return repository.listUserAssignmentSubmissions(userService.getCurrentUserId(), id, page, size);
+	}
+	
+	@GetMapping("/submissions2")
+	@PreAuthorize("hasAnyAuthority({'admin','teacher','user'})")
+	public List<Map<String, Object>> listMySubmissions(
+			@RequestParam(value = "page", defaultValue = "1") Integer page,
+			@RequestParam(value = "size", defaultValue = "10") Integer size) {
+		return repository.listUserAllSubmissions(userService.getCurrentUserId(), page, size);
+	}
+	
 	@GetMapping("/assignments/{id}/submissions")
 	@PreAuthorize("hasAnyAuthority({'admin','teacher','user'})")
 	public List<Map<String, Object>> listSubmissions(@PathVariable("id") int id) {

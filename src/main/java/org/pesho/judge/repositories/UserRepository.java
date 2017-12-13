@@ -1,5 +1,7 @@
 package org.pesho.judge.repositories;
 
+import static org.pesho.judge.repositories.SqlUtil.limit;
+
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -17,14 +19,10 @@ public class UserRepository {
     @Autowired
     private JdbcTemplate template;
 
-    public List<Map<String,Object>> listUsers() {
+    public List<Map<String,Object>> listUsers(int page, int size) {
         return template.queryForList(
-                "select users.id, roleid, username, firstname, lastname, email, isdisabled, roles.rolename from users inner join roles on users.roleid = roles.id");
-    }
-    
-    public List<Map<String,Object>> listUsers(String username) {
-        return template.queryForList(
-                "select users.id, roleid, username, firstname, lastname, email, isdisabled, roles.rolename from users inner join roles on users.roleid = roles.id");
+                "select users.id, roleid, username, firstname, lastname, email, isdisabled, roles.rolename from users inner join roles on users.roleid = roles.id" +
+        		" order by id " + limit(page, size));
     }
     
 	public void createUser(@RequestBody AddUserDao user) {
@@ -44,11 +42,13 @@ public class UserRepository {
 		template.update("update users set roleid=? where id=?", role.getRoleid(), userId);
 	}
 	
-	public List<Map<String, Object>> studentsForTeacher(int teacherId) {
-		return template.queryForList("select distinct u.id, u.roleid, u.username, u.firstname, u.lastname, u.email, u.isdisabled, r.rolename from usergroups as ug"+
-				" inner join users as u on u.id = ug.userid"+
-				" inner join groups as g on ug.groupid=g.id and g.creatorid = ?"+
-				" inner join roles as r on u.roleid = r.id", 
+	public List<Map<String, Object>> studentsForTeacher(int teacherId, int page, int size) {
+		return template.queryForList(
+				"select distinct u.id, u.roleid, u.username, u.firstname, u.lastname, u.email, u.isdisabled, r.rolename from usergroups as ug" +
+				" inner join users as u on u.id = ug.userid" +
+				" inner join groups as g on ug.groupid=g.id and g.creatorid = ?" +
+				" inner join roles as r on u.roleid = r.id" +
+				" order by id " + limit(page, size),
 				teacherId);
 	}
 	

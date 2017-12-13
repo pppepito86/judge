@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -35,14 +36,18 @@ public class UsersRestService {
 
 	@GetMapping("/users")
 	@PreAuthorize("hasAuthority('admin')")
-	public List<Map<String, Object>> listUsers() {
-		return repository.listUsers();
+	public List<Map<String, Object>> listUsers(
+			@RequestParam(value = "page", defaultValue = "1") Integer page,
+			@RequestParam(value = "size", defaultValue = "10") Integer size) {
+		return repository.listUsers(page, size);
 	}
 	
 	@GetMapping("/myusers")
 	@PreAuthorize("hasAnyAuthority({'admin','teacher'})")
-	public List<Map<String, Object>> listMyUsers() {
-		return repository.studentsForTeacher(userService.getCurrentUserId());
+	public List<Map<String, Object>> listMyUsers(
+			@RequestParam(value = "page", defaultValue = "1") Integer page,
+			@RequestParam(value = "size", defaultValue = "10") Integer size) {
+		return repository.studentsForTeacher(userService.getCurrentUserId(), page, size);
 	}
 		
 	@PutMapping("/users/validate={code}")

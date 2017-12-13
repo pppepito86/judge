@@ -50,6 +50,15 @@ public class SubmissionRepository {
 				assignmentId, userId);
 	}
 	
+	public List<Map<String, Object>> listUserAssignmentSubmissions(int userId, int assignmentId, int page, int size) {
+		return template.queryForList(
+				"select submissions.id, language, sourcefile, time, verdict, problems.name from submissions"+
+						" inner join problems on problems.id=submissions.problemid and submissions.assignmentid=? and submissions.userid=?"+
+						" order by submissions.id desc"+
+						" limit "+ (page-1)*size + "," + size +
+						assignmentId, userId);
+	}
+	
 	public List<Map<String, Object>> listUserProblemSubmissions(int userId, int assignmentId, int problemId) {
 		return template.queryForList(
 				"select submissions.id, language, sourcefile, verdict from submissions"+
@@ -61,6 +70,14 @@ public class SubmissionRepository {
 	public List<Map<String, Object>> listUserAllSubmissions(int userId) {
 		return template.queryForList(
 				"select id, time, assignmentid, problemid, points from submissions where userid=?"+
+				userId);
+	}
+
+	public List<Map<String, Object>> listUserAllSubmissions(int userId, int page, int size) {
+		return template.queryForList(
+				"select id, time, assignmentid, problemid, points from submissions where userid=?"+
+				" order by id desc"+
+				" limit "+ (page-1)*size + "," + size +
 				userId);
 	}
 	
