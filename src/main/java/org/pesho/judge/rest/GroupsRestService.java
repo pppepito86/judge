@@ -2,6 +2,7 @@ package org.pesho.judge.rest;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.core.MediaType;
@@ -45,14 +46,8 @@ public class GroupsRestService {
 
 	@GetMapping("/groups/{id}")
 	@PreAuthorize("hasAnyAuthority({'admin','teacher','user'})")
-	public List<Map<String, Object>> getGroup(@PathVariable("id") int id) {
-		if (userService.isAdmin()) {
-			return repository.listGroups();
-		} else if (userService.isTeacher()) {
-			return repository.listGroupsForTeacher(userService.getCurrentUserId());
-		} else {
-			return repository.listGroupsForUser(userService.getCurrentUserId());
-		}
+	public Optional<Map<String, Object>> getGroup(@PathVariable("id") int id) {
+		return repository.getGroup(id);
 	}
 	
 	@PostMapping("/groups")

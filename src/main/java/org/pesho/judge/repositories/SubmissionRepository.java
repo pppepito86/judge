@@ -47,8 +47,8 @@ public class SubmissionRepository {
 	
 	public List<Map<String, Object>> listUserAssignmentSubmissions(int userId, int assignmentId) {
 		return template.queryForList(
-				"select submissions.id, language, sourcefile, time, verdict, problems.name from submissions"+
-				" inner join problems on problems.id=submissions.problemid and submissions.assignmentid=? and submissions.userid=?"+
+				"select submissions.id, language, sourcefile, time, verdict, problems.name from submissions" +
+				" inner join problems on problems.id=submissions.problemid and submissions.assignmentid=? and submissions.userid=?",
 				assignmentId, userId);
 	}
 	
@@ -56,22 +56,21 @@ public class SubmissionRepository {
 		return template.queryForList(
 				"select submissions.id, language, sourcefile, time, verdict, problems.name from submissions"+
 						" inner join problems on problems.id=submissions.problemid and submissions.assignmentid=? and submissions.userid=?"+
-						" order by submissions.id desc"+
-						" limit "+ (page-1)*size + "," + size +
+						" order by submissions.id desc" + limit(page, size),
 						assignmentId, userId);
 	}
 	
 	public List<Map<String, Object>> listUserProblemSubmissions(int userId, int assignmentId, int problemId) {
 		return template.queryForList(
 				"select submissions.id, language, sourcefile, verdict from submissions"+
-				" where userid=? and assignmentid=? and problemid=?"+
+				" where userid=? and assignmentid=? and problemid=?",
 				userId, assignmentId, problemId);
 	}
 
 	
 	public List<Map<String, Object>> listUserAllSubmissions(int userId) {
 		return template.queryForList(
-				"select id, time, assignmentid, problemid, points from submissions where userid=?"+
+				"select id, time, assignmentid, problemid, points from submissions where userid=?",
 				userId);
 	}
 
@@ -79,7 +78,7 @@ public class SubmissionRepository {
 		return template.queryForList(
 				"select id, time, assignmentid, problemid, points from submissions where userid=?"+
 				" order by id desc"+
-				" limit "+ (page-1)*size + "," + size +
+				" limit "+ (page-1)*size + "," + size,
 				userId);
 	}
 	
@@ -87,7 +86,7 @@ public class SubmissionRepository {
 		return template.queryForList(
 				"select submissions.id, time, assignmentid, problemid, points from submissions" +
 				" inner join assignments on assignments.id=submissions.assignmentid where assignments.groupid=?" +
-				" order by id desc " + limit(page, size) +
+				" order by id desc " + limit(page, size),
 				groupId);
 	}
 	
@@ -95,7 +94,7 @@ public class SubmissionRepository {
 		return template.queryForList(
 				"select submissions.id, submissions.problemid, language, sourcefile, time, verdict, submissions.points, problems.name, users.id, users.username, users.firstname, users.lastname from submissions"+
 				" inner join problems on problems.id=submissions.problemid and submissions.assignmentid=?"+
-				" inner join users on users.id=submissions.userid"+
+				" inner join users on users.id=submissions.userid",
 				assignmentId);
 	}
 	
@@ -103,7 +102,7 @@ public class SubmissionRepository {
 		return template.queryForList(
 				"select submissions.id, submissions.problemid, language, sourcefile, time, verdict, submissions.points, problems.name, users.id, users.username, users.firstname, users.lastname from submissions"+
 				" inner join problems on problems.id=submissions.problemid and submissions.verdict='Accepted' and submissions.assignmentid=?"+
-				" inner join users on users.id=submissions.userid"+
+				" inner join users on users.id=submissions.userid",
 				assignmentId);
 	}
 	
@@ -112,7 +111,7 @@ public class SubmissionRepository {
 				"select submissions.id, submissions.problemid, submissions.userid, submissions.language, submissions.sourcefile, submissions.time, submissions.verdict, submissions.reason, assignmentproblems.points from submissions"+
 				" inner join assignmentproblems"+
 				" where assignmentproblems.problemid=submissions.problemid and assignmentproblems.assignmentid=submissions.assignmentid"+
-				" and submissions.problemid=?"+
+				" and submissions.problemid=?",
 				problemId);
 	}
 	
