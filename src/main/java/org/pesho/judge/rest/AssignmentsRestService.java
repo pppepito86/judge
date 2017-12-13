@@ -88,6 +88,12 @@ public class AssignmentsRestService {
 	        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
 	}
+	
+	@GetMapping("/assignments/{id}/problems")
+	@PreAuthorize("hasAnyAuthority({'admin','teacher'})")
+	public List<Map<String, Object>> getAssignmentProblems(@PathVariable("id") int id) {
+		return repository.listAssignmentProblems(id);
+	}
 
 	@PostMapping("/assignments")
 	@PreAuthorize("hasAnyAuthority({'admin','teacher'})")
