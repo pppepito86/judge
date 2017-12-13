@@ -1,8 +1,8 @@
-package org.pesho.judge.daos;
+package org.pesho.judge.dtos;
 
 import java.util.Optional;
 
-public class AddAssignmentDao {
+public class AddAssignmentDto {
 
     private String name;
     private String problem1;

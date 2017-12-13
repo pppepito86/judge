@@ -17,7 +17,7 @@ import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.io.FileUtils;
 import org.pesho.judge.UserService;
-import org.pesho.judge.daos.AddProblemDao;
+import org.pesho.judge.dtos.AddProblemDto;
 import org.pesho.judge.repositories.ProblemRepository;
 import org.pesho.judge.security.JudgeUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,7 +100,7 @@ public class ProblemsRestService {
 	@PreAuthorize("hasAnyAuthority({'admin','teacher'})")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@ResponseStatus(HttpStatus.CREATED)
-	public int createProblem(@RequestBody AddProblemDao problem) {
+	public int createProblem(@RequestBody AddProblemDto problem) {
 		return repository.createProblem(problem);
 	}
 	

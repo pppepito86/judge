@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.pesho.judge.UserService;
-import org.pesho.judge.daos.AddAssignmentDao;
+import org.pesho.judge.dtos.AddAssignmentDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -59,7 +59,7 @@ public class AssignmentRepository {
 	}
 
 	@Transactional
-    public int createAssignment(AddAssignmentDao assignment) {
+    public int createAssignment(AddAssignmentDto assignment) {
         int authorId = userService.getCurrentUserId();
         template.update("INSERT INTO assignments(name, author, groupid, starttime, endtime, testinfo, standings) VALUES(?, ?, ?, ?, ?, ?, ?)",
         		assignment.getName(),

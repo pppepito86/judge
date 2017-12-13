@@ -1,10 +1,10 @@
-package org.pesho.judge.daos;
+package org.pesho.judge.dtos;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class AddProblemDao {
+public class AddProblemDto {
 	
 	public static class Language {
 		@JsonProperty("Language")

@@ -1,6 +1,6 @@
-package org.pesho.judge.daos;
+package org.pesho.judge.dtos;
 
-public class AddUserDao {
+public class AddUserDto {
 	
 	private String username;
 	private String firstname;

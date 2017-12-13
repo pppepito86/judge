@@ -1,6 +1,6 @@
-package org.pesho.judge.daos;
+package org.pesho.judge.dtos;
 
-public class EditRoleDao {
+public class EditRoleDto {
 	
 	private int roleid;
 

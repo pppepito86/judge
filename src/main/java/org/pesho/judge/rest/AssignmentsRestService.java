@@ -8,7 +8,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.core.MediaType;
 
 import org.pesho.judge.UserService;
-import org.pesho.judge.daos.AddAssignmentDao;
+import org.pesho.judge.dtos.AddAssignmentDto;
 import org.pesho.judge.repositories.AssignmentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -63,7 +63,7 @@ public class AssignmentsRestService {
 	@PreAuthorize("hasAnyAuthority({'admin','teacher'})")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@ResponseStatus(HttpStatus.CREATED)
-	public int createAssignment(@RequestBody AddAssignmentDao assignment) {
+	public int createAssignment(@RequestBody AddAssignmentDto assignment) {
 		return repository.createAssignment(assignment);
 	}
 	

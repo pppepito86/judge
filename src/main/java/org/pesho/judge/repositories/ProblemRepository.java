@@ -7,8 +7,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.pesho.judge.UserService;
-import org.pesho.judge.daos.AddProblemDao;
-import org.pesho.judge.daos.AddProblemDao.Languages;
+import org.pesho.judge.dtos.AddProblemDto;
+import org.pesho.judge.dtos.AddProblemDto.Languages;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -104,7 +104,7 @@ public class ProblemRepository {
 	}
 
 	@Transactional
-	public int createProblem(AddProblemDao problem) {
+	public int createProblem(AddProblemDto problem) {
 		int authorId = userService.getCurrentUserId();
 		template.update(
 				"INSERT INTO problems(name, version, description, languages, visibility, author, points) VALUES(?, ?, ?, ?, ?, ?, ?)",

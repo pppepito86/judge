@@ -8,7 +8,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 
 import org.pesho.judge.UserService;
-import org.pesho.judge.daos.AddGroupDao;
+import org.pesho.judge.dtos.AddGroupDto;
 import org.pesho.judge.repositories.GroupRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -48,7 +48,7 @@ public class GroupsRestService {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@PreAuthorize("hasAnyAuthority({'admin','teacher'})")
 	@ResponseStatus(HttpStatus.CREATED)
-	public void createGroup(@RequestBody AddGroupDao group) {
+	public void createGroup(@RequestBody AddGroupDto group) {
 		repository.createGroup(group);
 	}
 	

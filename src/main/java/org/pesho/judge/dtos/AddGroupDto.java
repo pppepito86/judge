@@ -1,8 +1,8 @@
-package org.pesho.judge.daos;
+package org.pesho.judge.dtos;
 
 import javax.validation.constraints.Size;
 
-public class AddGroupDao {
+public class AddGroupDto {
 
     @Size(min=1, max=15)
     private String groupname;

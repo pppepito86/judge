@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.pesho.judge.daos.AddUserDao;
-import org.pesho.judge.daos.EditRoleDao;
+import org.pesho.judge.dtos.AddUserDto;
+import org.pesho.judge.dtos.EditRoleDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -25,7 +25,7 @@ public class UserRepository {
         		" order by id " + limit(page, size));
     }
     
-	public void createUser(@RequestBody AddUserDao user) {
+	public void createUser(@RequestBody AddUserDto user) {
 		template.update("INSERT INTO users(roleid, username, firstname, lastname, email, passwordhash, passwordsalt, isdisabled, validationcode) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)", 
 			3, 
 			user.getUsername(),
@@ -38,7 +38,7 @@ public class UserRepository {
 			UUID.randomUUID().toString());
 	}
 	
-	public void updateRole(int userId, EditRoleDao role) {
+	public void updateRole(int userId, EditRoleDto role) {
 		template.update("update users set roleid=? where id=?", role.getRoleid(), userId);
 	}
 	

@@ -15,7 +15,7 @@ import javax.ws.rs.core.MediaType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.pesho.judge.daos.AddAssignmentDao;
+import org.pesho.judge.dtos.AddAssignmentDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -101,8 +101,8 @@ public class AssignmentsTest {
 			.andExpect(jsonPath("problems[1].problemid", is(2)));
 	}
 	
-	private AddAssignmentDao createAssignment() {
-		AddAssignmentDao assignment = new AddAssignmentDao();
+	private AddAssignmentDto createAssignment() {
+		AddAssignmentDto assignment = new AddAssignmentDto();
 		assignment.setName("Test 1");
 		assignment.setGroupid("2");
 		assignment.setStartTime(null);

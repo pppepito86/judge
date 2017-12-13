@@ -11,7 +11,7 @@ import javax.ws.rs.core.MediaType;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.input.BoundedInputStream;
 import org.pesho.judge.UserService;
-import org.pesho.judge.daos.AddSubmissionDao;
+import org.pesho.judge.dtos.AddSubmissionDto;
 import org.pesho.judge.queue.SubmissionsQueue;
 import org.pesho.judge.repositories.SubmissionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,7 +93,7 @@ public class SubmissionsRestService {
 	@PreAuthorize("hasAnyAuthority({'admin','teacher','user'})")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	public ResponseEntity<?> createSubmissions(
-			@RequestPart(name = "metadata") AddSubmissionDao submission, 
+			@RequestPart(name = "metadata") AddSubmissionDto submission, 
 			@RequestPart("file") MultipartFile file
 			) throws Exception {
 		if (file.getSize() > 64*1024) {

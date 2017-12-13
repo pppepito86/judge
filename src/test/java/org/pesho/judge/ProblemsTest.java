@@ -22,9 +22,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.pesho.judge.daos.AddProblemDao;
-import org.pesho.judge.daos.AddProblemDao.Language;
-import org.pesho.judge.daos.AddProblemDao.Languages;
+import org.pesho.judge.dtos.AddProblemDto;
+import org.pesho.judge.dtos.AddProblemDto.Language;
+import org.pesho.judge.dtos.AddProblemDto.Languages;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -159,8 +159,8 @@ public class ProblemsTest {
 		assertThat(FileUtils.readFileToString(new File(problemDir, "output1")), is("12\n"));
 	}
 	
-	private AddProblemDao createProblem() {
-		AddProblemDao problem = new AddProblemDao();
+	private AddProblemDto createProblem() {
+		AddProblemDto problem = new AddProblemDto();
 		problem.setProblemname("a+b+c");
 		problem.setVersion("v1");
 		problem.setText("namerete sbora na chislata a, b i c");

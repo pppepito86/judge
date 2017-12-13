@@ -14,8 +14,8 @@ import javax.ws.rs.core.MediaType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.pesho.judge.daos.AddUserDao;
-import org.pesho.judge.daos.EditRoleDao;
+import org.pesho.judge.dtos.AddUserDto;
+import org.pesho.judge.dtos.EditRoleDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -75,7 +75,7 @@ public class UsersTest {
 	
 	@Test
 	public void testCreateUser() throws Exception {
-		AddUserDao user = createUser();
+		AddUserDto user = createUser();
 		mvc.perform(post("/register").contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(user))).andExpect(status().isCreated());
 
@@ -87,7 +87,7 @@ public class UsersTest {
 	@Test
 	public void testUpdateRole() throws Exception {
 		mvc.perform(get("/api/v1/users").header("Authorization", ADMIN_AUTH)).andExpect(status().isOk()).andExpect(jsonPath("$[2].roleid", is(3)));
-		EditRoleDao role = new EditRoleDao();
+		EditRoleDto role = new EditRoleDto();
 		role.setRoleid(2);
 		mvc.perform(put("/api/v1/users/3/roles").header("Authorization", ADMIN_AUTH)
 				.contentType(MediaType.APPLICATION_JSON)
@@ -98,7 +98,7 @@ public class UsersTest {
 	
 	@Test
 	public void testUpdateRoleUnauthorized() throws Exception {
-		EditRoleDao role = new EditRoleDao();
+		EditRoleDto role = new EditRoleDto();
 		role.setRoleid(2);
 		mvc.perform(put("/api/v1/users/3/roles")
 				.contentType(MediaType.APPLICATION_JSON)
@@ -107,7 +107,7 @@ public class UsersTest {
 	
 	@Test
 	public void testUpdateRoleForbidden() throws Exception {
-		EditRoleDao role = new EditRoleDao();
+		EditRoleDto role = new EditRoleDto();
 		role.setRoleid(2);
 		mvc.perform(put("/api/v1/users/3/roles").header("Authorization", TEACHER_AUTH)
 				.contentType(MediaType.APPLICATION_JSON)
@@ -117,8 +117,8 @@ public class UsersTest {
 				.content(objectMapper.writeValueAsString(role))).andExpect(status().isForbidden());
 	}
 
-	private AddUserDao createUser() {
-		AddUserDao user = new AddUserDao();
+	private AddUserDto createUser() {
+		AddUserDto user = new AddUserDto();
 		user.setUsername("testuser");
 		user.setFirstname("first");
 		user.setLastname("last");

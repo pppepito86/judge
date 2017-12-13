@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.pesho.judge.UserService;
-import org.pesho.judge.daos.AddGroupDao;
+import org.pesho.judge.dtos.AddGroupDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -44,7 +44,7 @@ public class GroupRepository {
 				groupName).stream().findFirst();
 	}
 
-	public void createGroup(AddGroupDao group) {
+	public void createGroup(AddGroupDto group) {
 		template.update("INSERT INTO groups(groupname, description, creatorid) VALUES(?, ?, ?)",
 				group.getGroupname(), group.getDescription(), userService.getCurrentUserId());
 	}

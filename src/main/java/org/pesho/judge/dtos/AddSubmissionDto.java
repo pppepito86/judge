@@ -1,6 +1,6 @@
-package org.pesho.judge.daos;
+package org.pesho.judge.dtos;
 
-public class AddSubmissionDao {
+public class AddSubmissionDto {
 
 	private int assignmentId;
 	private int problemId;

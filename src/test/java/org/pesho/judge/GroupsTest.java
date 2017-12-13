@@ -14,7 +14,7 @@ import javax.ws.rs.core.MediaType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.pesho.judge.daos.AddGroupDao;
+import org.pesho.judge.dtos.AddGroupDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -54,7 +54,7 @@ public class GroupsTest {
 
 	@Test
 	public void testCreateGroup() throws Exception {
-		AddGroupDao group = new AddGroupDao();
+		AddGroupDto group = new AddGroupDto();
 		group.setGroupname("5a");
 		group.setDescription("smg");
 
@@ -71,7 +71,7 @@ public class GroupsTest {
 	
 	@Test
 	public void testCreateGroupUnauthorized() throws Exception {
-		AddGroupDao group = new AddGroupDao();
+		AddGroupDto group = new AddGroupDto();
 		group.setGroupname("5a");
 		group.setDescription("smg");
 		mvc.perform(post("/api/v1/groups")
@@ -81,7 +81,7 @@ public class GroupsTest {
 
 	@Test
 	public void testCreateGroupForbidden() throws Exception {
-		AddGroupDao group = new AddGroupDao();
+		AddGroupDto group = new AddGroupDto();
 		group.setGroupname("5a");
 		group.setDescription("smg");
 		mvc.perform(post("/api/v1/groups").header("Authorization", STUDENT_AUTH)

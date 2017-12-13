@@ -8,8 +8,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 
 import org.pesho.judge.UserService;
-import org.pesho.judge.daos.AddUserDao;
-import org.pesho.judge.daos.EditRoleDao;
+import org.pesho.judge.dtos.AddUserDto;
+import org.pesho.judge.dtos.EditRoleDto;
 import org.pesho.judge.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -58,14 +58,14 @@ public class UsersRestService {
 	@PostMapping("/users")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@ResponseStatus(HttpStatus.CREATED)
-	public void createUser(@RequestBody AddUserDao user) {
+	public void createUser(@RequestBody AddUserDto user) {
 		repository.createUser(user);
 	}
 	
 	@PutMapping("/users/{user_id}/roles")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@PreAuthorize("hasAuthority('admin')")
-	public void updateRole(@PathVariable("user_id") int userId, @RequestBody EditRoleDao role) {
+	public void updateRole(@PathVariable("user_id") int userId, @RequestBody EditRoleDto role) {
 		repository.updateRole(userId, role);
 	}
 	

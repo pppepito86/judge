@@ -1,6 +1,6 @@
-package org.pesho.judge.daos;
+package org.pesho.judge.dtos;
 
-public class AddGroupUserDao {
+public class AddGroupUserDto {
 
 	private String userid;
 

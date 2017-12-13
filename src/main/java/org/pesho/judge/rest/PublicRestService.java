@@ -3,7 +3,7 @@ package org.pesho.judge.rest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.core.MediaType;
 
-import org.pesho.judge.daos.AddUserDao;
+import org.pesho.judge.dtos.AddUserDto;
 import org.pesho.judge.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,7 +21,7 @@ public class PublicRestService {
 	@PostMapping("/register")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@ResponseStatus(HttpStatus.CREATED)
-	public void createUser(@RequestBody AddUserDao user) {
+	public void createUser(@RequestBody AddUserDto user) {
 		repository.createUser(user);
 	}
 	

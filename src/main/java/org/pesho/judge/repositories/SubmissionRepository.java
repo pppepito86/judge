@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.pesho.judge.UserService;
-import org.pesho.judge.daos.AddSubmissionDao;
+import org.pesho.judge.dtos.AddSubmissionDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -21,7 +21,7 @@ public class SubmissionRepository {
     private UserService userService;
     
     @Transactional
-    public int addSubmission(AddSubmissionDao submission, String sourceFile) {
+    public int addSubmission(AddSubmissionDto submission, String sourceFile) {
         int userId = userService.getCurrentUserId();
         template.update("INSERT INTO submissions(assignmentid, problemid, userid, language, sourcefile, verdict, reason) VALUES(?, ?, ?, ?, ?, ?, ?)",
                 submission.getAssignmentId(),
