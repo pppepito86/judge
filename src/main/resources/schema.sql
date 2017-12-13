@@ -151,7 +151,7 @@ CREATE TABLE `assignments` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
   `starttime` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `endtime` timestamp,
+  `endtime` timestamp NULL,
   `author` int(11) NOT NULL,
   `groupid` int(11) DEFAULT NULL,
   `testinfo` VARCHAR(16) NOT NULL DEFAULT 'hide',
