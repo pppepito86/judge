@@ -63,10 +63,10 @@ public class GroupsTest {
 				.content(objectMapper.writeValueAsString(group))).andExpect(status().isCreated());
 
 		mvc.perform(get("/api/v1/groups").header("Authorization", ADMIN_AUTH)).andExpect(jsonPath("$", hasSize(3)))
-				.andExpect(jsonPath("$[2].groupname", is("5a")))
-				.andExpect(jsonPath("$[2].description", is("smg")))
-				.andExpect(jsonPath("$[2].creatorid", is(2)))
-				.andExpect(jsonPath("$[2].username", is("teacher")));
+				.andExpect(jsonPath("$[0].groupname", is("5a")))
+				.andExpect(jsonPath("$[0].description", is("smg")))
+				.andExpect(jsonPath("$[0].creatorid", is(2)))
+				.andExpect(jsonPath("$[0].username", is("teacher")));
 	}
 	
 	@Test
@@ -108,7 +108,7 @@ public class GroupsTest {
 			.andExpect(status().isOk());
 		mvc.perform(get("/api/v1/groups").header("Authorization", STUDENT_AUTH))
 			.andExpect(status().isOk()).andExpect(jsonPath("$", hasSize(2)))
-			.andExpect(jsonPath("$[1]groupname", is("9b")));
+			.andExpect(jsonPath("$[0]groupname", is("9b")));
 	}
 	
 }

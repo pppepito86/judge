@@ -74,7 +74,8 @@ public class AssignmentsTest {
 		mvc.perform(get("/api/v1/assignments/2").header("Authorization", STUDENT_AUTH)).andExpect(status().isForbidden());
 		mvc.perform(get("/api/v1/assignments/3").header("Authorization", STUDENT_AUTH)).andExpect(status().isForbidden());
 		
-		mvc.perform(get("/api/v1/assignments/1").header("Authorization", TEACHER_AUTH)).andExpect(status().isForbidden());
+		mvc.perform(get("/api/v1/assignments/1").header("Authorization", TEACHER_AUTH)).andExpect(status().isOk())
+			.andExpect(jsonPath("id", is(1)));
 		mvc.perform(get("/api/v1/assignments/2").header("Authorization", TEACHER_AUTH)).andExpect(status().isOk())
 			.andExpect(jsonPath("id", is(2)));
 		mvc.perform(get("/api/v1/assignments/3").header("Authorization", TEACHER_AUTH)).andExpect(status().isNoContent());

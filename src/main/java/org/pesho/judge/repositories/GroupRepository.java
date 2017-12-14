@@ -1,5 +1,7 @@
 package org.pesho.judge.repositories;
 
+import static org.pesho.judge.repositories.SqlUtil.limit;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -20,23 +22,27 @@ public class GroupRepository {
 	@Autowired
 	private UserService userService;
 
-	public List<Map<String, Object>> listGroups() {
+	public List<Map<String, Object>> listGroups(int page, int size) {
 		return template.queryForList(
-				"select groups.id, groups.groupname, groups.description, groups.creatorid, users.username from groups"
-						+ " inner join users on groups.creatorid = users.id");
+				"select groups.id, groups.groupname, groups.description, groups.creatorid, users.username from groups" + 
+				" inner join users on groups.creatorid = users.id" + 
+				" order by id desc " + limit(page, size));
 	}
 	
-	public List<Map<String, Object>> listGroupsForTeacher(int teacherId) {
+	public List<Map<String, Object>> listGroupsForTeacher(int teacherId, int page, int size) {
 		return template.queryForList(
-				"select groups.id, groups.groupname, groups.description, groups.creatorid, users.username from groups"
-						+ " inner join users on groups.creatorid = users.id where groups.creatorid=?",
-						teacherId);
+				"select groups.id, groups.groupname, groups.description, groups.creatorid, users.username from groups" +
+				" inner join users on groups.creatorid = users.id where groups.creatorid=?" +
+				" order by id desc " + limit(page, size),
+				teacherId);
 	}
 
-	public List<Map<String, Object>> listGroupsForUser(int userId) {
-		return template.queryForList("select groups.id, groupname, description, creatorid, users.username from groups"
-				+ " inner join usergroups on groups.id=usergroups.groupid and usergroups.userid=?"
-				+ " inner join users on groups.creatorid = users.id", userId);
+	public List<Map<String, Object>> listGroupsForUser(int userId, int page, int size) {
+		return template.queryForList("select groups.id, groupname, description, creatorid, users.username from groups" +
+				" inner join usergroups on groups.id=usergroups.groupid and usergroups.userid=?" +
+				" inner join users on groups.creatorid = users.id" +
+				" order by id desc " + limit(page, size), 
+				userId);
 	}
 
 	public Optional<Map<String, Object>> getGroup(int groupId) {

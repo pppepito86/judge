@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.pesho.judge.UserService;
@@ -35,6 +36,7 @@ public class AssignmentsRestService {
 	
 	@GetMapping("/assignments")
 	@PreAuthorize("hasAnyAuthority({'admin','teacher','user'})")
+	@Produces(MediaType.APPLICATION_JSON)
 	public List<Map<String, Object>> listAssignments(
 			@RequestParam(value = "page", defaultValue = "1") Integer page,
 			@RequestParam(value = "size", defaultValue = "10") Integer size) {
@@ -49,6 +51,7 @@ public class AssignmentsRestService {
 	
 	@GetMapping("/assignments/groups/{group_id}")
 	@PreAuthorize("hasAnyAuthority({'admin','teacher','user'})")
+	@Produces(MediaType.APPLICATION_JSON)
 	public List<Map<String, Object>> listGroupAssignments(
 			@PathVariable("group_id") int groupId,
 			@RequestParam(value = "page", defaultValue = "1") Integer page,
@@ -57,7 +60,8 @@ public class AssignmentsRestService {
 	}
 
 	@GetMapping("/assignments/users/{user_id}")
-	@PreAuthorize("hasAnyAuthority({'admin','teacher','user'})")
+	@PreAuthorize("hasAnyAuthority({'admin','teacher'})")
+	@Produces(MediaType.APPLICATION_JSON)
 	public List<Map<String, Object>> listUserAssignments(
 			@PathVariable("user_id") int userId,
 			@RequestParam(value = "page", defaultValue = "1") Integer page,
@@ -66,7 +70,8 @@ public class AssignmentsRestService {
 	}
 	
 	@GetMapping("/assignments/authors/{author_id}")
-	@PreAuthorize("hasAnyAuthority({'admin','teacher','user'})")
+	@PreAuthorize("hasAnyAuthority({'admin','teacher'})")
+	@Produces(MediaType.APPLICATION_JSON)
 	public List<Map<String, Object>> listAuthorAssignments(
 			@PathVariable("author_id") int authorId,
 			@RequestParam(value = "page", defaultValue = "1") Integer page,
@@ -76,21 +81,19 @@ public class AssignmentsRestService {
 	
 	@GetMapping("/assignments/{id}")
 	@PreAuthorize("hasAnyAuthority({'admin','teacher'})")
+	@Produces(MediaType.APPLICATION_JSON)
 	public ResponseEntity<?> getAssignment(@PathVariable("id") int id) {
 		Optional<Map<String,Object>> assignment = repository.getAssignment(id);
 		if (assignment.isPresent()) {
-			if (userService.isAdmin() || userService.getCurrentUserId() == assignment.get().get("author")) {
-				return new ResponseEntity<>(assignment.get(), HttpStatus.OK);
-			} else {
-		        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-			}
+			return new ResponseEntity<>(assignment.get(), HttpStatus.OK);
 		} else {
 	        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
 	}
 	
 	@GetMapping("/assignments/{id}/problems")
-	@PreAuthorize("hasAnyAuthority({'admin','teacher'})")
+	@PreAuthorize("hasAnyAuthority({'admin','teacher','user'})")
+	@Produces(MediaType.APPLICATION_JSON)
 	public List<Map<String, Object>> getAssignmentProblems(@PathVariable("id") int id) {
 		return repository.listAssignmentProblems(id);
 	}
@@ -98,6 +101,7 @@ public class AssignmentsRestService {
 	@PostMapping("/assignments")
 	@PreAuthorize("hasAnyAuthority({'admin','teacher'})")
 	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
 	@ResponseStatus(HttpStatus.CREATED)
 	public int createAssignment(@RequestBody AddAssignmentDto assignment) {
 		return repository.createAssignment(assignment);

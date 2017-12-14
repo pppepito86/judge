@@ -13,13 +13,13 @@ import java.util.zip.ZipFile;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.io.FileUtils;
 import org.pesho.judge.UserService;
 import org.pesho.judge.dtos.AddProblemDto;
 import org.pesho.judge.repositories.ProblemRepository;
-import org.pesho.judge.security.JudgeUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
@@ -53,6 +53,7 @@ public class ProblemsRestService {
 	
 	@GetMapping("/problems")
 	@PreAuthorize("hasAnyAuthority({'admin','teacher'})")
+	@Produces(MediaType.APPLICATION_JSON)
 	public List<Map<String, Object>> listProblems() {
 		if (userService.isAdmin()) {
 			return repository.listProblems();
@@ -63,12 +64,14 @@ public class ProblemsRestService {
 	
 	@GetMapping("/myproblems")
 	@PreAuthorize("hasAnyAuthority({'admin','teacher'})")
+	@Produces(MediaType.APPLICATION_JSON)
 	public List<Map<String, Object>> listMyProblems() {
 		return repository.listAuthorProblems(userService.getCurrentUserId());
 	}
 	
 	@GetMapping("/problems/{problem_id}")
 	@PreAuthorize("hasAnyAuthority({'admin','teacher'})")
+	@Produces(MediaType.APPLICATION_JSON)
 	public ResponseEntity<?> getProblem(@PathVariable("problem_id") int problem_id) {
 		Optional<Map<String,Object>> problem = repository.getProblem(problem_id);
 		if (problem.isPresent()) {
