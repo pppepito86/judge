@@ -47,8 +47,6 @@ public class GradeScheduledTask implements GradeListener {
     	Optional<Map<String, Object>> problem = problemRepository.getProblem(problemId);
     	if (!problem.isPresent()) return;
 
-    	
-    	
     	String sourceFile = (String) submission.get().get("sourcefile");
     	
     	int points = (int) problem.get().get("points");
@@ -78,12 +76,13 @@ public class GradeScheduledTask implements GradeListener {
     
     @Override
     public void addScoreStep(String step, StepResult result) {
-//    	submissionRepository.addSubmissionDetails(submissionId, step, result.getVerdict().toString(), result.getReason(), 0);
+    	String reason = result.getReason()!=null?result.getReason():"";
+    	submissionRepository.addSubmissionDetails(submissionId, step, result.getVerdict().toString(), reason, 0);
     }
     
     @Override
     public void addScore(double score) {
-    	submissionRepository.updateVerdict(submissionId, "accepted", "", 0, 0, (int) Math.round(score));
+    	submissionRepository.updateVerdict(submissionId, "", "", 0, 0, (int) Math.round(score));
     }
 	
 }

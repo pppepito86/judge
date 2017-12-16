@@ -49,7 +49,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @EnableWebSecurity
 public class SubmissionsTest {
 
-	private static String ADMIN_AUTH = "Basic cGVzaG86cGFzc3dvcmQ=";
 	private static String TEACHER_AUTH = "Basic dGVhY2hlcjpwYXNzd29yZA==";
 	private static String STUDENT_AUTH = "Basic c3R1ZGVudDpwYXNzd29yZA==";
 
@@ -61,10 +60,12 @@ public class SubmissionsTest {
 	
 	private MockMvc mvc;
 	private ObjectMapper objectMapper = new ObjectMapper();
+	private int problemId;
 
 	@Before
-	public void setUp() {
+	public void setUp() throws Exception {
 		this.mvc = MockMvcBuilders.webAppContextSetup(this.context).apply(springSecurity()).build();
+		this.problemId = submitProblem();
 	}
 	
 	@After
@@ -77,13 +78,24 @@ public class SubmissionsTest {
 
 	@Test
 	public void testCreateSubmission() throws Exception {
-		int problemId = submitProblem();
-		
-		mvc.perform(get("/api/v1/submissions/214").header("Authorization", ADMIN_AUTH));
+		testSubmission("sum_three.cpp", 100);
+	}
+
+	@Test
+	public void testCreateSubmissionJava() throws Exception {
+		testSubmission("SumThree.java", 100);
+	}
+	
+	@Test
+	public void testCreateSubmissionTL() throws Exception {
+		testSubmission("sum_three_tl.cpp", 0);
+	}
+
+	private void testSubmission(String sourceFile, int points) throws Exception {
 		MockMultipartFile multipartMetadata = new MockMultipartFile("metadata", null,
 				ContentType.APPLICATION_JSON.getMimeType(), objectMapper.writeValueAsBytes(createSubmission(problemId)));
-		InputStream is = this.getClass().getClassLoader().getResourceAsStream("solve.cpp");
-		MockMultipartFile multipartFile = new MockMultipartFile("file", "solve.cpp", "text/plain", is);
+		InputStream is = this.getClass().getClassLoader().getResourceAsStream(sourceFile);
+		MockMultipartFile multipartFile = new MockMultipartFile("file", sourceFile, "text/plain", is);
 		String locationHeader = this.mvc.perform(fileUpload("/api/v1/submissions")
 				.file(multipartMetadata)
 				.file(multipartFile)
@@ -94,10 +106,10 @@ public class SubmissionsTest {
 
 		Thread.sleep(5000);
 		mvc.perform(get("/api/v1/submissions/214").header("Authorization", STUDENT_AUTH))
-			.andExpect(jsonPath("sourcefile", is("solve.cpp")))
-			.andExpect(jsonPath("verdict", is("accepted")));
+			.andExpect(jsonPath("sourcefile", is(sourceFile)))
+			.andExpect(jsonPath("points", is(points)));		
 	}
-
+	
 	private int submitProblem() throws Exception {
 		MockMultipartFile multipartMetadata = new MockMultipartFile("metadata", null, ContentType.APPLICATION_JSON.getMimeType(), objectMapper.writeValueAsBytes(createProblem()));
 		InputStream is = this.getClass().getClassLoader().getResourceAsStream("tests.zip");
