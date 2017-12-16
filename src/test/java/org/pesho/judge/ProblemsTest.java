@@ -138,14 +138,15 @@ public class ProblemsTest {
 				.file(multipartMetadata)
 				.file(multipartFile)
 				.header("Authorization", TEACHER_AUTH))
-				.andExpect(status().isCreated()).andReturn().getResponse().getHeader(HttpHeaders.LOCATION);
+				.andExpect(status().isCreated())
+				.andReturn().getResponse().getHeader(HttpHeaders.LOCATION);
 		assertThat(locationHeader, is("http://localhost/api/v1/problems/25"));
 
-		mvc.perform(get("/api/v1/problems").header("Authorization", TEACHER_AUTH)).andExpect(jsonPath("$", hasSize(3)))
-			.andExpect(jsonPath("$[2].name", is("a+b+c")))
-			.andExpect(jsonPath("$[2].tags[0].tag", is("easy")))
-			.andExpect(jsonPath("$[2].languages.c++.Language", is("c++")))
-			.andExpect(jsonPath("$[2].languages.java.Language", is("java")));
+		mvc.perform(get("/api/v1/problems/25").header("Authorization", TEACHER_AUTH))
+			.andExpect(jsonPath("name", is("a+b+c")))
+			.andExpect(jsonPath("tags[0].tag", is("easy")))
+			.andExpect(jsonPath("languages.c++.Language", is("c++")))
+			.andExpect(jsonPath("languages.java.Language", is("java")));
 		
 		byte[] tests = this.mvc.perform(get("/api/v1/problems/25/tests")
 				.header("Authorization", TEACHER_AUTH))

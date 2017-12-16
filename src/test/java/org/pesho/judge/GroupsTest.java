@@ -62,17 +62,24 @@ public class GroupsTest {
 		group.setGroupname("5a");
 		group.setDescription("smg");
 
-		String locationHeader = mvc.perform(post("/api/v1/groups").header("Authorization", TEACHER_AUTH)
+		String locationHeader = mvc.perform(post("/api/v1/groups")
+				.header("Authorization", TEACHER_AUTH)
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(group))).andExpect(status().isCreated())
+				.content(objectMapper.writeValueAsString(group)))
+				.andExpect(status().isCreated())
 				.andReturn().getResponse().getHeader(HttpHeaders.LOCATION);
 		assertThat(locationHeader, is("http://localhost/api/v1/groups/3"));
 
-		mvc.perform(get("/api/v1/groups").header("Authorization", ADMIN_AUTH)).andExpect(jsonPath("$", hasSize(3)))
-				.andExpect(jsonPath("$[0].groupname", is("5a")))
-				.andExpect(jsonPath("$[0].description", is("smg")))
-				.andExpect(jsonPath("$[0].creatorid", is(2)))
-				.andExpect(jsonPath("$[0].username", is("teacher")));
+		mvc.perform(get("/api/v1/groups/3")
+				.header("Authorization", TEACHER_AUTH))
+				.andExpect(status().isOk());
+		
+		mvc.perform(get("/api/v1/groups/3")
+				.header("Authorization", ADMIN_AUTH))
+				.andExpect(jsonPath("groupname", is("5a")))
+				.andExpect(jsonPath("description", is("smg")))
+				.andExpect(jsonPath("creatorid", is(2)))
+				.andExpect(jsonPath("username", is("teacher")));
 	}
 	
 	@Test
@@ -105,7 +112,6 @@ public class GroupsTest {
 		mvc.perform(get("/api/v1/groups").header("Authorization", STUDENT_AUTH))
 			.andExpect(status().isOk()).andExpect(jsonPath("$", hasSize(1)))
 			.andExpect(jsonPath("$[0]groupname", is("public")));
-
 	}
 	
 	@Test

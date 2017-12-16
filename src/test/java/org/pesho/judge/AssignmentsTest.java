@@ -97,10 +97,12 @@ public class AssignmentsTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(createAssignment()))
 				.header("Authorization", TEACHER_AUTH))
-				.andExpect(status().isCreated()).andReturn().getResponse().getHeader(HttpHeaders.LOCATION);
+				.andExpect(status().isCreated())
+				.andReturn().getResponse().getHeader(HttpHeaders.LOCATION);
 		assertThat(locationHeader, is("http://localhost/api/v1/assignments/7"));
 		
-		mvc.perform(get("/api/v1/assignments/7").header("Authorization", TEACHER_AUTH)).andExpect(status().isOk())
+		mvc.perform(get("/api/v1/assignments/7").header("Authorization", TEACHER_AUTH))
+			.andExpect(status().isOk())
 			.andExpect(jsonPath("name", is("Test 1")))
 			.andExpect(jsonPath("problems", hasSize(2)))
 			.andExpect(jsonPath("problems[0].problemid", is(1)))

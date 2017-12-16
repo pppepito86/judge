@@ -93,7 +93,7 @@ public class SubmissionsTest {
 		assertThat(locationHeader, is("http://localhost/api/v1/submissions/214"));
 
 		Thread.sleep(5000);
-		mvc.perform(get(locationHeader).header("Authorization", ADMIN_AUTH))
+		mvc.perform(get("/api/v1/submissions/214").header("Authorization", STUDENT_AUTH))
 			.andExpect(jsonPath("sourcefile", is("solve.cpp")))
 			.andExpect(jsonPath("verdict", is("accepted")));
 	}
