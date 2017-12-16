@@ -2,9 +2,12 @@ package org.pesho.judge.rest;
 
 import java.io.File;
 import java.net.URI;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.core.MediaType;
@@ -122,6 +125,16 @@ public class SubmissionsRestService {
 		URI location = ServletUriComponentsBuilder.fromCurrentRequest()
 	    		.path("/{id}").buildAndExpand(submissionId).toUri();
 		return ResponseEntity.created(location).build();
-
+	}
+	
+	@GetMapping("/submissions/queue")
+	@PreAuthorize("hasAnyAuthority({'admin'})")
+	public List<Map<String, Object>> listSubmissions() {
+		Iterator<Integer> it = queue.iterator();
+		return Stream.generate(it::next)
+				.map(id -> repository.getSubmission(id))
+				.filter(submission -> submission.isPresent())
+				.map(submission -> submission.get())
+				.collect(Collectors.toList());
 	}
 }

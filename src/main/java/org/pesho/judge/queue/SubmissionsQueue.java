@@ -1,5 +1,6 @@
 package org.pesho.judge.queue;
 
+import java.util.Iterator;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -16,6 +17,10 @@ public class SubmissionsQueue {
 	
 	public Integer poll() {
 		return queue.poll();
+	}
+	
+	public Iterator<Integer> iterator() {
+		return queue.iterator();
 	}
 
 }
