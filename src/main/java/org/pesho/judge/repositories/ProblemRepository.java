@@ -104,7 +104,7 @@ public class ProblemRepository {
 	}
 
 	@Transactional
-	public int createProblem(AddProblemDto problem) {
+	public synchronized int createProblem(AddProblemDto problem) {
 		int authorId = userService.getCurrentUserId();
 		template.update(
 				"INSERT INTO problems(name, version, description, languages, visibility, author, points) VALUES(?, ?, ?, ?, ?, ?, ?)",

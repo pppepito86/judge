@@ -23,7 +23,7 @@ public class SubmissionRepository {
     private UserService userService;
     
     @Transactional
-    public int addSubmission(AddSubmissionDto submission, String sourceFile) {
+    public synchronized int addSubmission(AddSubmissionDto submission, String sourceFile) {
         int userId = userService.getCurrentUserId();
         template.update("INSERT INTO submissions(assignmentid, problemid, userid, language, sourcefile, verdict, reason) VALUES(?, ?, ?, ?, ?, ?, ?)",
                 submission.getAssignmentId(),

@@ -28,7 +28,7 @@ public class UserRepository {
     }
     
     @Transactional
-	public int createUser(@RequestBody AddUserDto user) {
+	public synchronized int createUser(@RequestBody AddUserDto user) {
 		template.update("INSERT INTO users(roleid, username, firstname, lastname, email, passwordhash, passwordsalt, isdisabled, validationcode) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)", 
 			3, 
 			user.getUsername(),

@@ -56,7 +56,7 @@ public class GroupRepository {
 	}
 
 	@Transactional
-	public int createGroup(AddGroupDto group) {
+	public synchronized int createGroup(AddGroupDto group) {
 		template.update("INSERT INTO groups(groupname, description, creatorid) VALUES(?, ?, ?)",
 				group.getGroupname(), group.getDescription(), userService.getCurrentUserId());
 		

@@ -74,7 +74,7 @@ public class AssignmentRepository {
 	}
 
 	@Transactional
-    public int createAssignment(AddAssignmentDto assignment) {
+    public synchronized int createAssignment(AddAssignmentDto assignment) {
         int authorId = userService.getCurrentUserId();
         template.update("INSERT INTO assignments(name, author, groupid, starttime, endtime, testinfo, standings) VALUES(?, ?, ?, ?, ?, ?, ?)",
         		assignment.getName(),
