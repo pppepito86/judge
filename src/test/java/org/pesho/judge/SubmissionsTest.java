@@ -4,14 +4,11 @@ import static org.hamcrest.Matchers.is;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.fileUpload;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.io.File;
 import java.io.InputStream;
-
-import javax.ws.rs.core.MediaType;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.http.entity.ContentType;
@@ -20,9 +17,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.pesho.judge.dtos.AddProblemDto;
-import org.pesho.judge.dtos.AddSubmissionDto;
 import org.pesho.judge.dtos.AddProblemDto.Language;
 import org.pesho.judge.dtos.AddProblemDto.Languages;
+import org.pesho.judge.dtos.AddSubmissionDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -94,18 +91,16 @@ public class SubmissionsTest {
 	}
 
 	private int submitProblem() throws Exception {
-		String id = this.mvc.perform(post("/api/v1/problems")
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(createProblem()))
-				.header("Authorization", TEACHER_AUTH))
-				.andExpect(status().isCreated()).andReturn().getResponse().getContentAsString();
-
+		MockMultipartFile multipartMetadata = new MockMultipartFile("metadata", null, ContentType.APPLICATION_JSON.getMimeType(), objectMapper.writeValueAsBytes(createProblem()));
 		InputStream is = this.getClass().getClassLoader().getResourceAsStream("tests.zip");
 		MockMultipartFile multipartFile = new MockMultipartFile("file", "tests.zip", "text/plain", is);
-		this.mvc.perform(fileUpload("/api/v1/problems/"+id+"/tests").file(multipartFile)
-				.contentType(MediaType.APPLICATION_OCTET_STREAM)
+		
+		String id = this.mvc.perform(fileUpload("/api/v1/problems")
+				.file(multipartMetadata)
+				.file(multipartFile)
 				.header("Authorization", TEACHER_AUTH))
-				.andExpect(status().isCreated());
+				.andExpect(status().isCreated()).andReturn().getResponse().getContentAsString();
+		
 		return Integer.valueOf(id);
 	}
 

@@ -1,12 +1,12 @@
 package org.pesho.judge;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.Assert.assertThat;
-import static org.hamcrest.Matchers.*;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.fileUpload;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -15,9 +15,8 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.zip.ZipInputStream;
 
-import javax.ws.rs.core.MediaType;
-
 import org.apache.commons.io.FileUtils;
+import org.apache.http.entity.ContentType;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -127,18 +126,15 @@ public class ProblemsTest {
 
 	@Test
 	public void testCreateProblem() throws Exception {
-		String id = this.mvc.perform(post("/api/v1/problems")
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(createProblem()))
-				.header("Authorization", TEACHER_AUTH))
-				.andExpect(status().isCreated()).andReturn().getResponse().getContentAsString();
-
+		MockMultipartFile multipartMetadata = new MockMultipartFile("metadata", null, ContentType.APPLICATION_JSON.getMimeType(), objectMapper.writeValueAsBytes(createProblem()));
 		InputStream is = this.getClass().getClassLoader().getResourceAsStream("tests.zip");
 		MockMultipartFile multipartFile = new MockMultipartFile("file", "tests.zip", "text/plain", is);
-		this.mvc.perform(fileUpload("/api/v1/problems/"+id+"/tests").file(multipartFile)
-				.contentType(MediaType.APPLICATION_OCTET_STREAM)
+		
+		String id = this.mvc.perform(fileUpload("/api/v1/problems")
+				.file(multipartMetadata)
+				.file(multipartFile)
 				.header("Authorization", TEACHER_AUTH))
-				.andExpect(status().isCreated());
+				.andExpect(status().isCreated()).andReturn().getResponse().getContentAsString();
 
 		mvc.perform(get("/api/v1/problems").header("Authorization", TEACHER_AUTH)).andExpect(jsonPath("$", hasSize(3)))
 			.andExpect(jsonPath("$[2].name", is("a+b+c")))

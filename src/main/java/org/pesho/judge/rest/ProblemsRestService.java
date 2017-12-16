@@ -32,8 +32,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -101,24 +101,18 @@ public class ProblemsRestService {
 	
 	@PostMapping("/problems")
 	@PreAuthorize("hasAnyAuthority({'admin','teacher'})")
-	@Consumes(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@ResponseStatus(HttpStatus.CREATED)
-	public int createProblem(@RequestBody AddProblemDto problem) {
-		return repository.createProblem(problem);
-	}
-	
-	@PostMapping("/problems/{problem_id}/tests")
-	@PreAuthorize("hasAnyAuthority({'admin','teacher'})")
-	@Consumes(MediaType.APPLICATION_OCTET_STREAM)
-	public ResponseEntity<?> uploadTests(@PathVariable("problem_id") String problemId, MultipartFile file) throws Exception {
-		File problemsDir = new File(workDir, "problems");
-		File problemDir = new File(problemsDir, problemId);
-		if (problemDir.exists()) {
-			return new ResponseEntity<>(HttpStatus.CONFLICT);
-		} else {
+	public int createProblem(
+			@RequestPart("metadata") AddProblemDto problem,
+			@RequestPart(name = "file", required = false) Optional<MultipartFile> file) throws Exception {
+		int problemId = repository.createProblem(problem);
+		if (file.isPresent()) {
+			File problemsDir = new File(workDir, "problems");
+			File problemDir = new File(problemsDir, String.valueOf(problemId));
 			problemDir.mkdirs();
 			File testsFile = new File(problemDir, "tests.zip");
-			FileUtils.copyInputStreamToFile(file.getInputStream(), testsFile);
+			FileUtils.copyInputStreamToFile(file.get().getInputStream(), testsFile);
 			try(ZipFile zipFile = new ZipFile(testsFile)) {
 				Enumeration<? extends ZipEntry> entries = zipFile.entries();
 				while (entries.hasMoreElements()) {
@@ -127,7 +121,26 @@ public class ProblemsRestService {
 					FileUtils.copyInputStreamToFile( zipFile.getInputStream(entry), test);
 				}
 			}
-			return new ResponseEntity<>(HttpStatus.CREATED);			
+		}
+		return problemId;
+	}
+	
+	@PutMapping("/problems/{problem_id}/tests")
+	@PreAuthorize("hasAnyAuthority({'admin','teacher'})")
+	@Consumes(MediaType.APPLICATION_OCTET_STREAM)
+	public void uploadTests(@PathVariable("problem_id") String problemId, MultipartFile file) throws Exception {
+		File problemsDir = new File(workDir, "problems");
+		File problemDir = new File(problemsDir, problemId);
+		FileUtils.cleanDirectory(problemDir);
+		File testsFile = new File(problemDir, "tests.zip");
+		FileUtils.copyInputStreamToFile(file.getInputStream(), testsFile);
+		try(ZipFile zipFile = new ZipFile(testsFile)) {
+			Enumeration<? extends ZipEntry> entries = zipFile.entries();
+			while (entries.hasMoreElements()) {
+				ZipEntry entry = entries.nextElement();
+				File test = new File(problemDir, entry.getName());
+				FileUtils.copyInputStreamToFile( zipFile.getInputStream(entry), test);
+			}
 		}
 	}
 	
