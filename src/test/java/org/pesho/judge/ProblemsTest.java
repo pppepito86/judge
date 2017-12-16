@@ -15,6 +15,8 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.zip.ZipInputStream;
 
+import javax.ws.rs.core.HttpHeaders;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.http.entity.ContentType;
 import org.junit.After;
@@ -31,6 +33,7 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -42,6 +45,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
+@Sql("classpath:schema.sql")
 @TestPropertySource(locations = "classpath:test.properties")
 @TestConfiguration
 @EnableWebSecurity
@@ -130,11 +134,12 @@ public class ProblemsTest {
 		InputStream is = this.getClass().getClassLoader().getResourceAsStream("tests.zip");
 		MockMultipartFile multipartFile = new MockMultipartFile("file", "tests.zip", "text/plain", is);
 		
-		String id = this.mvc.perform(fileUpload("/api/v1/problems")
+		String locationHeader = this.mvc.perform(fileUpload("/api/v1/problems")
 				.file(multipartMetadata)
 				.file(multipartFile)
 				.header("Authorization", TEACHER_AUTH))
-				.andExpect(status().isCreated()).andReturn().getResponse().getContentAsString();
+				.andExpect(status().isCreated()).andReturn().getResponse().getHeader(HttpHeaders.LOCATION);
+		assertThat(locationHeader, is("http://localhost/api/v1/problems/25"));
 
 		mvc.perform(get("/api/v1/problems").header("Authorization", TEACHER_AUTH)).andExpect(jsonPath("$", hasSize(3)))
 			.andExpect(jsonPath("$[2].name", is("a+b+c")))
@@ -142,11 +147,11 @@ public class ProblemsTest {
 			.andExpect(jsonPath("$[2].languages.c++.Language", is("c++")))
 			.andExpect(jsonPath("$[2].languages.java.Language", is("java")));
 		
-		byte[] tests = this.mvc.perform(get("/api/v1/problems/"+id+"/tests")
+		byte[] tests = this.mvc.perform(get("/api/v1/problems/25/tests")
 				.header("Authorization", TEACHER_AUTH))
 				.andExpect(status().isOk()).andReturn().getResponse().getContentAsByteArray();
 		
-		File problemDir = new File(new File(workDir, "problems"), id);
+		File problemDir = new File(new File(workDir, "problems"), "25");
 		ZipInputStream zis = new ZipInputStream(new ByteArrayInputStream(tests));
 		assertThat(zis.getNextEntry().getName(), is("output1"));
 		assertThat(zis.getNextEntry().getName(), is("input1"));

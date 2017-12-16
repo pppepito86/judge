@@ -1,6 +1,7 @@
 package org.pesho.judge;
 
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.fileUpload;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -9,6 +10,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.io.File;
 import java.io.InputStream;
+
+import javax.ws.rs.core.HttpHeaders;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.http.entity.ContentType;
@@ -29,6 +32,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -39,6 +43,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
+@Sql("classpath:schema.sql")
 @TestPropertySource(locations = "classpath:test.properties")
 @TestConfiguration
 @EnableWebSecurity
@@ -79,13 +84,16 @@ public class SubmissionsTest {
 				ContentType.APPLICATION_JSON.getMimeType(), objectMapper.writeValueAsBytes(createSubmission(problemId)));
 		InputStream is = this.getClass().getClassLoader().getResourceAsStream("solve.cpp");
 		MockMultipartFile multipartFile = new MockMultipartFile("file", "solve.cpp", "text/plain", is);
-		String id = this.mvc.perform(fileUpload("/api/v1/submissions")
+		String locationHeader = this.mvc.perform(fileUpload("/api/v1/submissions")
 				.file(multipartMetadata)
 				.file(multipartFile)
 				.header("Authorization", STUDENT_AUTH))
-				.andExpect(status().isCreated()).andReturn().getResponse().getContentAsString();
+				.andExpect(status().isCreated())
+				.andReturn().getResponse().getHeader(HttpHeaders.LOCATION);
+		assertThat(locationHeader, is("http://localhost/api/v1/submissions/214"));
+
 		Thread.sleep(5000);
-		mvc.perform(get("/api/v1/submissions/" + id).header("Authorization", ADMIN_AUTH))
+		mvc.perform(get(locationHeader).header("Authorization", ADMIN_AUTH))
 			.andExpect(jsonPath("sourcefile", is("solve.cpp")))
 			.andExpect(jsonPath("verdict", is("accepted")));
 	}
@@ -95,12 +103,13 @@ public class SubmissionsTest {
 		InputStream is = this.getClass().getClassLoader().getResourceAsStream("tests.zip");
 		MockMultipartFile multipartFile = new MockMultipartFile("file", "tests.zip", "text/plain", is);
 		
-		String id = this.mvc.perform(fileUpload("/api/v1/problems")
+		String locationHeader = this.mvc.perform(fileUpload("/api/v1/problems")
 				.file(multipartMetadata)
 				.file(multipartFile)
 				.header("Authorization", TEACHER_AUTH))
-				.andExpect(status().isCreated()).andReturn().getResponse().getContentAsString();
+				.andExpect(status().isCreated()).andReturn().getResponse().getHeader("Location");
 		
+		String id = locationHeader.substring(locationHeader.lastIndexOf("/") + 1);
 		return Integer.valueOf(id);
 	}
 

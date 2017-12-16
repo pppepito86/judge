@@ -4,6 +4,7 @@ import static org.pesho.judge.repositories.SqlUtil.limit;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.pesho.judge.dtos.AddUserDto;
@@ -11,6 +12,7 @@ import org.pesho.judge.dtos.EditRoleDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Configuration
@@ -25,7 +27,8 @@ public class UserRepository {
         		" order by id " + limit(page, size));
     }
     
-	public void createUser(@RequestBody AddUserDto user) {
+    @Transactional
+	public int createUser(@RequestBody AddUserDto user) {
 		template.update("INSERT INTO users(roleid, username, firstname, lastname, email, passwordhash, passwordsalt, isdisabled, validationcode) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)", 
 			3, 
 			user.getUsername(),
@@ -36,6 +39,9 @@ public class UserRepository {
 			user.getPassword(),
 			false,
 			UUID.randomUUID().toString());
+		Optional<Object> first = template.queryForList("SELECT MAX(id) FROM users").stream()
+				.map(x -> x.get("MAX(id)")).findFirst();
+		return (int) first.get();
 	}
 	
 	public void updateRole(int userId, EditRoleDto role) {

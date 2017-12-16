@@ -1,5 +1,6 @@
 package org.pesho.judge.rest;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
@@ -11,7 +12,7 @@ import org.pesho.judge.dtos.AddUserDto;
 import org.pesho.judge.dtos.EditRoleDto;
 import org.pesho.judge.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,8 +21,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -56,9 +57,12 @@ public class UsersRestService {
 	
 	@PostMapping("/users")
 	@Consumes(MediaType.APPLICATION_JSON)
-	@ResponseStatus(HttpStatus.CREATED)
-	public void createUser(@RequestBody AddUserDto user) {
-		repository.createUser(user);
+	public ResponseEntity<?> createUser(@RequestBody AddUserDto user) {
+		int userId = repository.createUser(user);
+		
+	    URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+	    		.path("/{id}").buildAndExpand(userId).toUri();
+		return ResponseEntity.created(location).build();
 	}
 	
 	@PutMapping("/users/{user_id}/roles")

@@ -2,6 +2,7 @@ package org.pesho.judge;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -10,6 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.Optional;
 
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 
 import org.junit.Before;
@@ -21,6 +23,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -32,6 +35,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
+@Sql("classpath:schema.sql")
 @TestPropertySource(locations = "classpath:test.properties")
 @TestConfiguration
 @EnableWebSecurity
@@ -89,13 +93,14 @@ public class AssignmentsTest {
 
 	@Test
 	public void testCreateAssignment() throws Exception {
-		String id = mvc.perform(post("/api/v1/assignments")
+		String locationHeader = mvc.perform(post("/api/v1/assignments")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(objectMapper.writeValueAsString(createAssignment()))
 				.header("Authorization", TEACHER_AUTH))
-				.andExpect(status().isCreated()).andReturn().getResponse().getContentAsString();
+				.andExpect(status().isCreated()).andReturn().getResponse().getHeader(HttpHeaders.LOCATION);
+		assertThat(locationHeader, is("http://localhost/api/v1/assignments/7"));
 		
-		mvc.perform(get("/api/v1/assignments/"+id).header("Authorization", TEACHER_AUTH)).andExpect(status().isOk())
+		mvc.perform(get("/api/v1/assignments/7").header("Authorization", TEACHER_AUTH)).andExpect(status().isOk())
 			.andExpect(jsonPath("name", is("Test 1")))
 			.andExpect(jsonPath("problems", hasSize(2)))
 			.andExpect(jsonPath("problems[0].problemid", is(1)))

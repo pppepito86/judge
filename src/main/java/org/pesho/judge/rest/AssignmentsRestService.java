@@ -1,5 +1,6 @@
 package org.pesho.judge.rest;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -21,8 +22,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -101,10 +102,12 @@ public class AssignmentsRestService {
 	@PostMapping("/assignments")
 	@PreAuthorize("hasAnyAuthority({'admin','teacher'})")
 	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	@ResponseStatus(HttpStatus.CREATED)
-	public int createAssignment(@RequestBody AddAssignmentDto assignment) {
-		return repository.createAssignment(assignment);
+	public ResponseEntity<?> createAssignment(@RequestBody AddAssignmentDto assignment) {
+		int assignmentId =  repository.createAssignment(assignment);
+		
+	    URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+	    		.path("/{id}").buildAndExpand(assignmentId).toUri();
+		return ResponseEntity.created(location).build();
 	}
 	
 }

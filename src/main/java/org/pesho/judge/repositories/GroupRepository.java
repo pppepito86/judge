@@ -55,9 +55,14 @@ public class GroupRepository {
 				groupName).stream().findFirst();
 	}
 
-	public void createGroup(AddGroupDto group) {
+	@Transactional
+	public int createGroup(AddGroupDto group) {
 		template.update("INSERT INTO groups(groupname, description, creatorid) VALUES(?, ?, ?)",
 				group.getGroupname(), group.getDescription(), userService.getCurrentUserId());
+		
+		Optional<Object> first = template.queryForList("SELECT MAX(id) FROM groups").stream()
+				.map(x -> x.get("MAX(id)")).findFirst();
+		return (int) first.get();
 	}
 
 	@Transactional

@@ -2,6 +2,7 @@ package org.pesho.judge;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -9,6 +10,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 
 import org.junit.Before;
@@ -20,6 +22,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -31,6 +34,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Transactional
+@Sql("classpath:schema.sql")
 @TestPropertySource(locations = "classpath:test.properties")
 @TestConfiguration
 @EnableWebSecurity
@@ -58,9 +62,11 @@ public class GroupsTest {
 		group.setGroupname("5a");
 		group.setDescription("smg");
 
-		mvc.perform(post("/api/v1/groups").header("Authorization", TEACHER_AUTH)
+		String locationHeader = mvc.perform(post("/api/v1/groups").header("Authorization", TEACHER_AUTH)
 				.contentType(MediaType.APPLICATION_JSON)
-				.content(objectMapper.writeValueAsString(group))).andExpect(status().isCreated());
+				.content(objectMapper.writeValueAsString(group))).andExpect(status().isCreated())
+				.andReturn().getResponse().getHeader(HttpHeaders.LOCATION);
+		assertThat(locationHeader, is("http://localhost/api/v1/groups/3"));
 
 		mvc.perform(get("/api/v1/groups").header("Authorization", ADMIN_AUTH)).andExpect(jsonPath("$", hasSize(3)))
 				.andExpect(jsonPath("$[0].groupname", is("5a")))

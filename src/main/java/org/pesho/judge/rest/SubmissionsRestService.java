@@ -1,6 +1,7 @@
 package org.pesho.judge.rest;
 
 import java.io.File;
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -116,6 +118,10 @@ public class SubmissionsRestService {
 		BoundedInputStream boundedIS = new BoundedInputStream(file.getInputStream(), 64*1024);
 		FileUtils.copyInputStreamToFile(boundedIS, submissionFile);
 		queue.add(submissionId);
-		return new ResponseEntity<>(submissionId, HttpStatus.CREATED);			
+
+		URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+	    		.path("/{id}").buildAndExpand(submissionId).toUri();
+		return ResponseEntity.created(location).build();
+
 	}
 }

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
@@ -34,9 +35,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -102,10 +103,10 @@ public class ProblemsRestService {
 	@PostMapping("/problems")
 	@PreAuthorize("hasAnyAuthority({'admin','teacher'})")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	@ResponseStatus(HttpStatus.CREATED)
-	public int createProblem(
+	public ResponseEntity<?> createProblem(
 			@RequestPart("metadata") AddProblemDto problem,
-			@RequestPart(name = "file", required = false) Optional<MultipartFile> file) throws Exception {
+			@RequestPart(name = "file", required = false) Optional<MultipartFile> file
+			) throws Exception {
 		int problemId = repository.createProblem(problem);
 		if (file.isPresent()) {
 			File problemsDir = new File(workDir, "problems");
@@ -122,7 +123,10 @@ public class ProblemsRestService {
 				}
 			}
 		}
-		return problemId;
+		
+	    URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+	    		.path("/{id}").buildAndExpand(problemId).toUri();
+		return ResponseEntity.created(location).build();
 	}
 	
 	@PutMapping("/problems/{problem_id}/tests")
