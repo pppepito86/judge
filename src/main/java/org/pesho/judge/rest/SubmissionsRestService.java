@@ -6,8 +6,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.core.MediaType;
@@ -131,7 +134,10 @@ public class SubmissionsRestService {
 	@PreAuthorize("hasAnyAuthority({'admin'})")
 	public List<Map<String, Object>> listSubmissions() {
 		Iterator<Integer> it = queue.iterator();
-		return Stream.generate(it::next)
+		Stream<Integer> stream = StreamSupport.stream(
+		          Spliterators.spliteratorUnknownSize(it, Spliterator.ORDERED),
+		          false);
+		return stream
 				.map(id -> repository.getSubmission(id))
 				.filter(submission -> submission.isPresent())
 				.map(submission -> submission.get())

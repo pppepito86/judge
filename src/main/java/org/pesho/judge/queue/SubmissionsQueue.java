@@ -15,6 +15,10 @@ public class SubmissionsQueue {
 		queue.add(submissionId);
 	}
 	
+	public Integer peek() {
+		return queue.peek();
+	}
+	
 	public Integer poll() {
 		return queue.poll();
 	}

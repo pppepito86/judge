@@ -75,20 +75,25 @@ public class SubmissionsTest {
 
 	@Test
 	public void testCreateSubmission() throws Exception {
-		testSubmission("sum_three.cpp", 100);
+		testSubmission("sum_three.cpp", "Accepted", 100);
 	}
 
 	@Test
 	public void testCreateSubmissionJava() throws Exception {
-		testSubmission("SumThree.java", 100);
+		testSubmission("SumThree.java", "Accepted", 100);
 	}
 	
 	@Test
 	public void testCreateSubmissionTL() throws Exception {
-		testSubmission("sum_three_tl.cpp", 0);
+		testSubmission("sum_three_tl.cpp", "0%", 0);
+	}
+	
+	@Test
+	public void testCreateSubmissionCE() throws Exception {
+		testSubmission("sum_three_ce.cpp", "Compilation Failed", 0);
 	}
 
-	private void testSubmission(String sourceFile, int points) throws Exception {
+	private void testSubmission(String sourceFile, String verdict, int points) throws Exception {
 		MockMultipartFile multipartMetadata = new MockMultipartFile("metadata", null,
 				ContentType.APPLICATION_JSON.getMimeType(), objectMapper.writeValueAsBytes(createSubmission(problemId)));
 		InputStream is = this.getClass().getClassLoader().getResourceAsStream(sourceFile);
@@ -104,6 +109,7 @@ public class SubmissionsTest {
 		Thread.sleep(5000);
 		mvc.perform(get("/api/v1/submissions/214").header("Authorization", STUDENT_AUTH))
 			.andExpect(jsonPath("sourcefile", is(sourceFile)))
+			.andExpect(jsonPath("verdict", is(verdict)))
 			.andExpect(jsonPath("points", is(points)));		
 	}
 	

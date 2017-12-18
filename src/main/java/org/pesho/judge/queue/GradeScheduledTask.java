@@ -37,9 +37,17 @@ public class GradeScheduledTask implements GradeListener {
 	
     @Scheduled(fixedDelay = 100)
 	public void gradeTask() {
-    	submissionId = queue.poll();
+    	submissionId = queue.peek();
     	if (submissionId == null) return;
     	
+    	try {
+    		grade();
+    	} finally {
+    		queue.poll();
+    	}
+	}
+
+    private void grade() {
     	Optional<Map<String, Object>> submission = submissionRepository.getSubmission(submissionId);
     	if (!submission.isPresent()) return;
     	
@@ -72,7 +80,7 @@ public class GradeScheduledTask implements GradeListener {
 
     	SubmissionGrader grader = new SubmissionGrader(taskDetails, sourceFileFile.getAbsolutePath(), this);
     	grader.grade();
-	}
+    }
     
     @Override
     public void addScoreStep(String step, StepResult result) {
@@ -81,8 +89,8 @@ public class GradeScheduledTask implements GradeListener {
     }
     
     @Override
-    public void addScore(double score) {
-    	submissionRepository.updateVerdict(submissionId, "", "", 0, 0, (int) Math.round(score));
+    public void addFinalScore(String verdict, double score) {
+    	submissionRepository.updateVerdict(submissionId, verdict, "", 0, 0, (int) Math.round(score));
     }
 	
 }
