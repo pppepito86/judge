@@ -132,6 +132,7 @@ public class SubmissionsRestService {
 	
 	@GetMapping("/submissions/queue")
 	@PreAuthorize("hasAnyAuthority({'admin'})")
+	@Consumes(MediaType.APPLICATION_JSON)
 	public List<Map<String, Object>> listSubmissions() {
 		Iterator<Integer> it = queue.iterator();
 		Stream<Integer> stream = StreamSupport.stream(

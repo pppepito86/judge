@@ -81,7 +81,8 @@ public class ProblemsTest {
 	public void testListProblems() throws Exception {
 		mvc.perform(get("/api/v1/problems")).andExpect(status().isUnauthorized());
 		mvc.perform(get("/api/v1/problems").header("Authorization", STUDENT_AUTH)).andExpect(status().isForbidden());
-		mvc.perform(get("/api/v1/problems").header("Authorization", TEACHER_AUTH)).andExpect(status().isOk())
+		mvc.perform(get("/api/v1/problems").header("Authorization", TEACHER_AUTH))
+				.andExpect(status().isOk())
 				.andExpect(jsonPath("$", hasSize(2))).andExpect(jsonPath("$[0].id", is(1)))
 				.andExpect(jsonPath("$[1].id", is(2)));
 		mvc.perform(get("/api/v1/problems").header("Authorization", ADMIN_AUTH)).andExpect(status().isOk())
@@ -103,7 +104,8 @@ public class ProblemsTest {
 	@Test
 	public void testProblemsTags() throws Exception {
 		mvc.perform(get("/api/v1/problems/1").header("Authorization", ADMIN_AUTH)).andExpect(status().isOk())
-				.andExpect(jsonPath("tags", hasSize(2))).andExpect(jsonPath("tags[0].tag", is("dp")))
+				.andExpect(jsonPath("tags", hasSize(2)))
+				.andExpect(jsonPath("tags[0].tag", is("dp")))
 				.andExpect(jsonPath("tags[1].tag", is("binarysearch")));
 	}
 
