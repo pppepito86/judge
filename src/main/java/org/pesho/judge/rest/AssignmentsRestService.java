@@ -12,6 +12,7 @@ import javax.ws.rs.core.MediaType;
 import org.pesho.judge.UserService;
 import org.pesho.judge.dtos.AddAssignmentDto;
 import org.pesho.judge.repositories.AssignmentRepository;
+import org.pesho.judge.repositories.SubmissionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +35,9 @@ public class AssignmentsRestService {
 	
 	@Autowired
 	private AssignmentRepository repository;
+
+	@Autowired
+	private SubmissionRepository submissionsRepository;
 	
 	@GetMapping("/assignments")
 	@PreAuthorize("hasAnyAuthority({'admin','teacher','user'})")
@@ -98,7 +102,35 @@ public class AssignmentsRestService {
 	public List<Map<String, Object>> getAssignmentProblems(@PathVariable("id") int id) {
 		return repository.listAssignmentProblems(id);
 	}
+	
+	@GetMapping("/assignments/{id}/points")
+	@PreAuthorize("hasAnyAuthority({'admin','teacher','user'})")
+	@Produces(MediaType.APPLICATION_JSON)
+	public String getAssignmentPoints(@PathVariable("id") int id) {
+		List<Map<String, Object>> problems = repository.listAssignmentProblems(id);
+		int points = problems.stream()
+			.map(p -> submissionsRepository.getBestUserSubmission(userService.getCurrentUserId(), (int) p.get("assignmentid"), (int) p.get("problemid")))
+			.filter(s -> s.isPresent())
+			.mapToInt(s -> (int) s.get().get("points"))
+			.sum();
+		int max = problems.stream().mapToInt(p -> (int) p.get("points")).sum();
+		return String.format("{\"points\": %d, \"max\" : %d}", points, max);
+	}
 
+	@GetMapping("/assignments/{assignment_id}/problems/{problem_id}")
+	@PreAuthorize("hasAnyAuthority({'admin','teacher','user'})")
+	@Produces(MediaType.APPLICATION_JSON)
+	public ResponseEntity<?> getAssignmentProblem(
+			@PathVariable("assignment_id") int assignmentId,
+			@PathVariable("problem_id") int problemNumber) {
+		Optional<Map<String,Object>> problem = repository.getAssignmentProblem(assignmentId, problemNumber);
+		if (problem.isPresent()) {
+			return new ResponseEntity<>(problem.get(), HttpStatus.OK);
+		} else {
+	        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
+	}
+	
 	@PostMapping("/assignments")
 	@PreAuthorize("hasAnyAuthority({'admin','teacher'})")
 	@Consumes(MediaType.APPLICATION_JSON)

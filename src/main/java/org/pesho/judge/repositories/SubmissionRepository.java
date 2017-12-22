@@ -92,7 +92,7 @@ public class SubmissionRepository {
 	
 	public List<Map<String, Object>> listAssignmentSubmissions(int assignmentId) {
 		return template.queryForList(
-				"select submissions.id, submissions.problemid, language, sourcefile, time, verdict, submissions.points, problems.name, users.id, users.username, users.firstname, users.lastname from submissions"+
+				"select submissions.id, submissions.problemid, language, sourcefile, time, verdict, submissions.points, problems.name, submissions.userid, users.username, users.firstname, users.lastname from submissions"+
 				" inner join problems on problems.id=submissions.problemid and submissions.assignmentid=?"+
 				" inner join users on users.id=submissions.userid",
 				assignmentId);
@@ -147,6 +147,17 @@ public class SubmissionRepository {
 		template.update(
 				"delete from submissiondetails where submissionid=?",
 				id);
+	}
+
+
+	public Optional<Map<String, Object>> getBestUserSubmission(int userId, int assignmentId, int problemId) {
+		return template.queryForList(
+				"select submissions.id, submissions.problemid, language, sourcefile, time, verdict, submissions.points, problems.name, users.id, users.username, users.firstname, users.lastname from submissions"+
+				" inner join problems on problems.id=submissions.problemid"+
+				" inner join users on users.id=submissions.userid" +
+				" where submissions.userid=? and submissions.assignmentid=? and submissions.problemid=?" +
+				" order by submissions.points desc, submissions.id",
+				userId, assignmentId, problemId).stream().findFirst();
 	}
 	
 }

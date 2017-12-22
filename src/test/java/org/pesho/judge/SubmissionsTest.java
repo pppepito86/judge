@@ -109,8 +109,9 @@ public class SubmissionsTest {
 		Thread.sleep(5000);
 		mvc.perform(get("/api/v1/submissions/214").header("Authorization", STUDENT_AUTH))
 			.andExpect(jsonPath("sourcefile", is(sourceFile)))
+			.andExpect(jsonPath("reason", is("")))
 			.andExpect(jsonPath("verdict", is(verdict)))
-			.andExpect(jsonPath("points", is(points)));		
+			.andExpect(jsonPath("points", is(points)));	
 	}
 	
 	private int submitProblem() throws Exception {

@@ -69,6 +69,5 @@ public class UserRepository {
 	public void validateUser(int code) {
 		template.update("update users set validationcode='' where validationcode=?", code);
 	}
-
 	
 }

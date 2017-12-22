@@ -112,5 +112,13 @@ public class AssignmentRepository {
 				" inner join problems on assignmentproblems.assignmentid=? and assignmentproblems.problemid=problems.id order by assignmentproblems.number",
 				assignmentId);
 	}
+	
+	public Optional<Map<String, Object>> getAssignmentProblem(int assignmentId, int problemNumber) {
+		return template.queryForList(
+				"select assignmentproblems.id, assignmentid, problemid, assignmentproblems.number, assignmentproblems.points, problems.name from assignmentproblems" + 
+						" inner join problems on assignmentproblems.assignmentid=? and assignmentproblems.problemid=problems.id order by assignmentproblems.number" +
+						" where assignmentproblems.number = ?",
+						assignmentId, problemNumber).stream().findFirst();
+	}
 
 }
