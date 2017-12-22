@@ -56,7 +56,7 @@ public class AssignmentRepository {
 				"select assignments.id, assignments.name, assignments.author, assignments.groupid, users.username, groups.groupname, assignments.starttime, assignments.endtime from assignments" +
 				" inner join users on assignments.author = users.id" +
 				" inner join groups on assignments.groupid = groups.id" +
-				" inner join usergroups on assignments.groupid = usergroups.groupid and assignments.groupid = ?" +
+				" where assignments.groupid = ?" +
 				" order by id desc " + limit(page, size),
 				groupId);
 	}

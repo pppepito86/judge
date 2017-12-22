@@ -58,6 +58,14 @@ public class UserRepository {
 				teacherId);
 	}
 	
+    public List<Map<String,Object>> usersForGroup(int groupId, int page, int size) {
+        return template.queryForList(
+        		"select distinct u.id, u.roleid, u.username, u.firstname, u.lastname, u.email, u.isdisabled, r.rolename from usergroups as ug"+
+        		" inner join users as u on u.id = ug.userid and ug.groupid = ? "+
+        		" inner join roles as r on u.roleid = r.id " + limit(page, size),
+        		groupId);
+    }
+	
 	public void validateUser(int code) {
 		template.update("update users set validationcode='' where validationcode=?", code);
 	}

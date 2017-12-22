@@ -49,7 +49,17 @@ public class UsersRestService {
 			@RequestParam(value = "size", defaultValue = "10") Integer size) {
 		return repository.studentsForTeacher(userService.getCurrentUserId(), page, size);
 	}
-		
+
+	@GetMapping("/users/groups/{group_id}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public List<Map<String, Object>> listGroupUsers(
+			@PathVariable("group_id") int groupId,
+			@RequestParam(value = "page", defaultValue = "1") Integer page,
+			@RequestParam(value = "size", defaultValue = "10") Integer size) {
+		return repository.usersForGroup(groupId, page, size);
+	}
+	
+	
 	@PutMapping("/users/validate={code}")
 	public void validateUser(@PathVariable("code") int code) {
 		repository.validateUser(code);
