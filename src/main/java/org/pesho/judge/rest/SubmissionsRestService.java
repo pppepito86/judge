@@ -96,6 +96,11 @@ public class SubmissionsRestService {
 		try {
 			Optional<Map<String, Object>> submission = repository.getSubmission(id);
 			if (submission.isPresent()) {
+				File submissionsDir = new File(workDir, "submissions");
+				File currentDir = new File(submissionsDir, String.valueOf(submission.get().get("id")));
+				File sourceFile = new File(currentDir, (String) submission.get().get("sourcefile"));
+				String source = FileUtils.readFileToString(sourceFile);
+				submission.get().put("source", source);
 				return new ResponseEntity<>(submission.get(), HttpStatus.OK);
 			} else {
 		        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
