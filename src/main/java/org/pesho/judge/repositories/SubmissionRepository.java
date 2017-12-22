@@ -115,11 +115,15 @@ public class SubmissionRepository {
 				problemId);
 	}
 	
+	@Transactional
 	public Optional<Map<String, Object>> getSubmission(int id) {
 		Optional<Map<String, Object>> submission = template.queryForList(
 				"select submissions.id, submissions.problemid, submissions.userid, language, sourcefile, time, verdict, reason, submissions.points, problems.name, assignments.testinfo from submissions"+
 				" inner join problems on problems.id=submissions.problemid and submissions.id=?"+
 				" inner join assignments on assignments.id=submissions.assignmentid", id).stream().findFirst();
+		if (submission.isPresent()) {
+			submission.get().put("details", listSubmissionDetails(id));
+		}
 		return submission;
 	}
 
@@ -139,7 +143,7 @@ public class SubmissionRepository {
 	
 	public List<Map<String, Object>> listSubmissionDetails(int submissionId) {
 		return template.queryForList(
-				"select id, submissionid, step, status, reason, time from submissiondetails where submissionid = ? order by id asc"+
+				"select id, submissionid, step, status, reason, time from submissiondetails where submissionid = ? order by id asc",
 				submissionId);
 	}
 	
