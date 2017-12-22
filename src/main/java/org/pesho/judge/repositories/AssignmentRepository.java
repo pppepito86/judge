@@ -115,8 +115,8 @@ public class AssignmentRepository {
 	
 	public Optional<Map<String, Object>> getAssignmentProblem(int assignmentId, int problemNumber) {
 		return template.queryForList(
-				"select assignmentproblems.id, assignmentid, problemid, assignmentproblems.number, assignmentproblems.points, problems.name from assignmentproblems" + 
-						" inner join problems on assignmentproblems.assignmentid=? and assignmentproblems.problemid=problems.id and assignmentproblems.number=?",
+				"select * from problems" + 
+				" inner join assignmentproblems on assignmentproblems.assignmentid=? and assignmentproblems.problemid=problems.id and assignmentproblems.number=?",
 						assignmentId, problemNumber).stream().findFirst();
 	}
 
