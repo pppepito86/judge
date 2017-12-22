@@ -87,8 +87,11 @@ public class SubmissionRepository {
 	
 	public List<Map<String, Object>> listGroupAllSubmissions(int groupId, int page, int size) {
 		return template.queryForList(
-				"select submissions.id, time, assignmentid, problemid, points from submissions" +
-				" inner join assignments on assignments.id=submissions.assignmentid where assignments.groupid=?" +
+				"select submissions.id, time, assignmentid, problemid, submissions.points, assignments.name, assignments.name as assignmentname, users.username, problems.name, problems.name as problemname from submissions" +
+				" inner join assignments on assignments.id=submissions.assignmentid" +
+				" inner join users on users.id=submissions.userid" +
+				" inner join problems on problems.id=submissions.problemid" +
+				" where assignments.groupid=?" +
 				" order by id desc " + limit(page, size),
 				groupId);
 	}
