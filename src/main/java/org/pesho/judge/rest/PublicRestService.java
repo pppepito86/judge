@@ -43,7 +43,7 @@ public class PublicRestService {
 		if (userDetails != null && passwordEncoder.matches(user.getPassword(), userDetails.getPassword())) {
 			return ResponseEntity.ok().build();
 		} else {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
 	}
 	
