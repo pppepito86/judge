@@ -28,7 +28,7 @@ public class ProblemRepository {
 	@Transactional
 	public List<Map<String, Object>> listProblems() {
 		List<Map<String, Object>> problems = template.queryForList(
-				"select problems.id, problems.name, problems.version, problems.points, problems.description, problems.languages, problems.visibility, problems.author, users.username from problems"
+				"select problems.id, problems.name, problems.version, problems.points, problems.languages, problems.visibility, problems.author, users.username from problems"
 						+ " inner join users on problems.author = users.id");
 		Iterator<Map<String, Object>> it = problems.iterator();
 		while (it.hasNext()) {
@@ -42,7 +42,7 @@ public class ProblemRepository {
 	@Transactional
 	public List<Map<String, Object>> listProblems(int teacherId) {
 		List<Map<String, Object>> problems = template.queryForList(
-				"select problems.id, problems.name, problems.version, problems.points, problems.description, problems.languages, problems.visibility, problems.author, users.username from problems"
+				"select problems.id, problems.name, problems.version, problems.points, problems.languages, problems.visibility, problems.author, users.username from problems"
 						+ " inner join users on problems.author = users.id where problems.author=? OR problems.visibility='public'",
 				teacherId);
 		Iterator<Map<String, Object>> it = problems.iterator();
@@ -56,7 +56,7 @@ public class ProblemRepository {
 
 	@Transactional
 	public List<Map<String, Object>> listAuthorProblems(int authorId) {
-		List<Map<String, Object>> problems = template.queryForList("select * from problems where author=?",
+		List<Map<String, Object>> problems = template.queryForList("select id, name, version, points, languages, visibility, author from problems where author=?",
 				authorId);
 		Iterator<Map<String, Object>> it = problems.iterator();
 		while (it.hasNext()) {
