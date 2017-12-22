@@ -1,6 +1,8 @@
 package org.pesho.judge.rest;
 
 import java.net.URI;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -144,6 +146,31 @@ public class AssignmentsRestService {
 	    URI location = ServletUriComponentsBuilder.fromCurrentRequest()
 	    		.path("/{id}").buildAndExpand(assignmentId).toUri();
 		return ResponseEntity.created(location).build();
+	}
+
+	@GetMapping("/assignments/{id}/standings")
+	@PreAuthorize("hasAnyAuthority({'admin','teacher','user'})")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<Map<String, Object>> getStanding(@PathVariable("id") int id) {
+		List<Map<String, Object>> problems = repository.listAssignmentProblems(id);
+		List<Map<String, Object>> users = repository.listAssignmentUsers(id);
+		problems.stream().forEach(p -> 
+			users.stream().forEach(u -> {
+				int points = (int) submissionsRepository.getBestUserSubmission((int) u.get("id"), id, (int)p.get("problemid")).orElse(Collections.<String, Object>emptyMap()).getOrDefault("points", 0);
+				u.put(String.valueOf((int) p.get("number")), points);
+				u.put("points", (int) u.getOrDefault("points", 0) + points);
+			}
+		));
+		Collections.sort(users, new Comparator<Map<String, Object>>() {
+			@Override
+			public int compare(Map<String, Object> o1, Map<String, Object> o2) {
+				int p1 = (int) o1.get("points");
+				int p2 = (int) o2.get("points");
+				return p2 - p1;
+			}
+		});
+		
+		return users;
 	}
 	
 }

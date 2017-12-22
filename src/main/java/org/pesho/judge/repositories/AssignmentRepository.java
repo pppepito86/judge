@@ -50,6 +50,14 @@ public class AssignmentRepository {
 				" order by id desc " + limit(page, size),
 				userId);
 	}
+
+	public List<Map<String, Object>> listAssignmentUsers(int id) {
+		return template.queryForList(
+				"select users.id, users.roleid, username, firstname, lastname, email from users"+
+				" inner join usergroups on usergroups.userid = users.id"+
+				" inner join assignments on assignments.groupid = usergroups.groupid and assignments.id=?", 
+				id);
+	}
 	
 	public List<Map<String, Object>> listGroupAssignments(int groupId, int page, int size) {
 		return template.queryForList(
