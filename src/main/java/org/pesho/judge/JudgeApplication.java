@@ -14,6 +14,4 @@ public class JudgeApplication {
 		SpringApplication.run(JudgeApplication.class, args);
 	}
 	
-	
-	
 }
