@@ -99,7 +99,12 @@ public class SubmissionsRestService {
 				File submissionsDir = new File(workDir, "submissions");
 				File currentDir = new File(submissionsDir, String.valueOf(submission.get().get("id")));
 				File sourceFile = new File(currentDir, (String) submission.get().get("sourcefile"));
-				String source = FileUtils.readFileToString(sourceFile);
+				String source = "";
+				try {
+					source = FileUtils.readFileToString(sourceFile);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 				submission.get().put("source", source);
 				return new ResponseEntity<>(submission.get(), HttpStatus.OK);
 			} else {
