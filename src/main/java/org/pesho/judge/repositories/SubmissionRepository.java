@@ -48,7 +48,8 @@ public class SubmissionRepository {
 	public List<Map<String, Object>> listUserAssignmentSubmissions(int userId, int assignmentId) {
 		return template.queryForList(
 				"select submissions.id, language, sourcefile, time, verdict, problems.name from submissions" +
-				" inner join problems on problems.id=submissions.problemid and submissions.assignmentid=? and submissions.userid=?",
+				" inner join problems on problems.id=submissions.problemid and submissions.assignmentid=? and submissions.userid=?" +
+				" order by submissions.id desc",
 				assignmentId, userId);
 	}
 	
@@ -62,15 +63,17 @@ public class SubmissionRepository {
 	
 	public List<Map<String, Object>> listUserProblemSubmissions(int userId, int assignmentId, int problemId) {
 		return template.queryForList(
-				"select submissions.id, language, sourcefile, verdict from submissions"+
-				" where userid=? and assignmentid=? and problemid=?",
+				"select submissions.id, language, sourcefile, verdict from submissions" +
+				" where userid=? and assignmentid=? and problemid=?" +
+				" order by submissions.id desc",
 				userId, assignmentId, problemId);
 	}
 
 	
 	public List<Map<String, Object>> listUserAllSubmissions(int userId) {
 		return template.queryForList(
-				"select id, time, assignmentid, problemid, points from submissions where userid=?",
+				"select id, time, assignmentid, problemid, points from submissions where userid=?" +
+				" order by id desc",
 				userId);
 	}
 
@@ -94,7 +97,7 @@ public class SubmissionRepository {
 		return template.queryForList(
 				"select submissions.id, submissions.problemid, language, sourcefile, time, verdict, submissions.points, problems.name, submissions.userid, users.username, users.firstname, users.lastname from submissions"+
 				" inner join problems on problems.id=submissions.problemid and submissions.assignmentid=?"+
-				" inner join users on users.id=submissions.userid",
+				" inner join users on users.id=submissions.userid order by id desc",
 				assignmentId);
 	}
 	
@@ -102,16 +105,18 @@ public class SubmissionRepository {
 		return template.queryForList(
 				"select submissions.id, submissions.problemid, language, sourcefile, time, verdict, submissions.points, problems.name, users.id, users.username, users.firstname, users.lastname from submissions"+
 				" inner join problems on problems.id=submissions.problemid and submissions.verdict='Accepted' and submissions.assignmentid=?"+
-				" inner join users on users.id=submissions.userid",
+				" inner join users on users.id=submissions.userid" +
+				" order by submissions.id desc",
 				assignmentId);
 	}
 	
 	public List<Map<String, Object>> listProblemSubmissions(int problemId) {
 		return template.queryForList(
-				"select submissions.id, submissions.problemid, submissions.userid, submissions.language, submissions.sourcefile, submissions.time, submissions.verdict, submissions.reason, assignmentproblems.points from submissions"+
-				" inner join assignmentproblems"+
-				" where assignmentproblems.problemid=submissions.problemid and assignmentproblems.assignmentid=submissions.assignmentid"+
-				" and submissions.problemid=?",
+				"select submissions.id, submissions.problemid, submissions.userid, submissions.language, submissions.sourcefile, submissions.time, submissions.verdict, submissions.reason, assignmentproblems.points from submissions" +
+				" inner join assignmentproblems" +
+				" where assignmentproblems.problemid=submissions.problemid and assignmentproblems.assignmentid=submissions.assignmentid" +
+				" and submissions.problemid=?" +
+				" order by submissions.id desc",
 				problemId);
 	}
 	
