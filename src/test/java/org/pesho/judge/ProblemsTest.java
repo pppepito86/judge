@@ -171,7 +171,7 @@ public class ProblemsTest {
 		problem.setTest("1 2 3\n#\n6\n");
 		problem.setLanguages(new Languages(new Language("c++", 1000, 64), new Language("java", 1000, 64)));
 		problem.setVisibility("public");
-		problem.setPoints("100");
+		problem.setPoints(100);
 		problem.setTags("easy");
 		return problem;
 	}

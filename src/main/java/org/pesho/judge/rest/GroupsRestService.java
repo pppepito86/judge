@@ -74,6 +74,14 @@ public class GroupsRestService {
 		return ResponseEntity.created(location).build();
 	}
 	
+	@PutMapping("/groups/{group_id}")
+	@PreAuthorize("hasAnyAuthority({'admin','teacher'})")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void updateGroup(@PathVariable("group_id") int groupId,
+			@RequestBody AddGroupDto group) {
+		repository.updateGroup(groupId, group);
+	}
+	
 	@GetMapping("/groups/{group_id}/users")
 	@PreAuthorize("hasAnyAuthority({'admin','teacher'})")
 	@Produces(MediaType.APPLICATION_JSON)

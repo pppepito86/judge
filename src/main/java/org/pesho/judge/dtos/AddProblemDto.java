@@ -77,7 +77,6 @@ public class AddProblemDto {
 	    public void setJava(Language java) {
 			this.java = java;
 		}
-		
 	}
 
     private String problemname;
@@ -86,7 +85,7 @@ public class AddProblemDto {
     private String text;
     private String test;
     private String visibility;
-    private String points;
+    private int points;
     private Languages languages;
 
     public String getProblemname() {
@@ -137,11 +136,11 @@ public class AddProblemDto {
         this.visibility = visibility;
     }
 
-    public String getPoints() {
+    public int getPoints() {
         return points;
     }
 
-    public void setPoints(String points) {
+    public void setPoints(int points) {
         this.points = points;
     }
     

@@ -67,6 +67,12 @@ public class GroupRepository {
 	}
 
 	@Transactional
+	public synchronized int updateGroup(int groupId, AddGroupDto group) {
+		return template.update("UPDATE groups set groupname=?, description=? where id=?",
+				group.getGroupname(), group.getDescription(), groupId);
+	}
+	
+	@Transactional
 	public void addGroupUser(String groupName) {
 		Object groupId = getGroup(groupName).map(x -> x.get("id")).orElseThrow(() -> new IllegalStateException());
 		template.update("INSERT INTO usergroups(userid, groupid, roleid) VALUES(?, ?, ?)",

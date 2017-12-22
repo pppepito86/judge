@@ -6,7 +6,6 @@ public class AddGroupDto {
 
     @Size(min=1, max=15)
     private String groupname;
-
     private String description;
 
     public String getGroupname() {
