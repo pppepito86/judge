@@ -12,6 +12,7 @@ import javax.ws.rs.core.MediaType;
 import org.pesho.judge.UserService;
 import org.pesho.judge.dtos.AddAssignmentDto;
 import org.pesho.judge.repositories.AssignmentRepository;
+import org.pesho.judge.repositories.ProblemRepository;
 import org.pesho.judge.repositories.SubmissionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,6 +36,9 @@ public class AssignmentsRestService {
 	
 	@Autowired
 	private AssignmentRepository repository;
+	
+	@Autowired
+	private ProblemRepository problemsRepository;
 
 	@Autowired
 	private SubmissionRepository submissionsRepository;
@@ -123,7 +127,7 @@ public class AssignmentsRestService {
 	public ResponseEntity<?> getAssignmentProblem(
 			@PathVariable("assignment_id") int assignmentId,
 			@PathVariable("problem_id") int problemNumber) {
-		Optional<Map<String,Object>> problem = repository.getAssignmentProblem(assignmentId, problemNumber);
+		Optional<Map<String,Object>> problem = problemsRepository.getAssignmentProblem(assignmentId, problemNumber);
 		if (problem.isPresent()) {
 			return new ResponseEntity<>(problem.get(), HttpStatus.OK);
 		} else {

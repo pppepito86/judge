@@ -54,6 +54,7 @@ public class ProblemRepository {
 		return problems;
 	}
 
+	@Transactional
 	public List<Map<String, Object>> listAuthorProblems(int authorId) {
 		List<Map<String, Object>> problems = template.queryForList("select * from problems where author=?",
 				authorId);
@@ -85,6 +86,25 @@ public class ProblemRepository {
 		}
 		return problem;
 	}
+	
+	@Transactional
+	public Optional<Map<String, Object>> getAssignmentProblem(int assignmentId, int problemNumber) {
+		Optional<Map<String, Object>> problem = template.queryForList(
+				"select * from problems" + 
+				" inner join assignmentproblems on assignmentproblems.assignmentid=? and assignmentproblems.problemid=problems.id and assignmentproblems.number=?",
+						assignmentId, problemNumber).stream().findFirst();
+		if (problem.isPresent()) {
+			List<Map<String, Object>> tags = template.queryForList("select tag from tags where problemid=?",
+					problem.get().get("id"));
+			if (tags == null) {
+				tags = new LinkedList<>();
+			}
+			problem.get().put("tags", tags);
+			fixLanguage(problem.get());
+		}
+		return problem;
+	}
+
 
 	private void fixLanguage(Map<String, Object> problem) {
 		if (problem.get("languages") == null) return;
